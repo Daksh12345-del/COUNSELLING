@@ -10,9 +10,6 @@
 </head>
 <body>
 
-</head>
-<body>
-
 <!-- TOAST -->
 <div id="toast">✓ Enquiry submitted! We'll call you within 24 hours.</div>
 
@@ -27,11 +24,11 @@
   <div class="admin-login-box">
     <div style="font-size:36px;margin-bottom:12px">🔐</div>
     <h2>Admin Access</h2>
-    <p>Enter the admin password to view enquiry data and analytics.</p>
-    <input type="password" id="adminPwdInput" placeholder="••••••••" onkeydown="if(event.key==='Enter')checkAdminPwd()">
+    <p>Log in to view enquiry data, bookings, and analytics.</p>
+    <input type="text" id="adminUserInput" placeholder="Username" autocomplete="username" style="letter-spacing:normal" value="admin">
+    <input type="password" id="adminPwdInput" placeholder="Password" autocomplete="current-password" style="letter-spacing:normal" onkeydown="if(event.key==='Enter')checkAdminPwd()">
     <button class="admin-login-btn" onclick="checkAdminPwd()">Unlock Dashboard</button>
     <div class="admin-login-error" id="adminLoginError">Incorrect password. Try again.</div>
-    <p style="font-size:11px;color:rgba(255,255,255,0.25);margin-top:18px">Default password: admin123</p>
   </div>
 </div>
 
@@ -388,13 +385,82 @@
           <select id="b-course"><option value="">Select course</option><option>Hotel Management</option><option>Law (CLAT/AILET)</option><option>BJMC / Media</option><option>BBA / MBA</option><option>Engineering (JEE)</option><option>Medical (NEET)</option><option>B.Ed</option><option>Not sure yet</option></select>
         </div>
       </div>
-      <button class="book-btn" onclick="bookSlot()">✅ Book My Free Call</button>
+      <button class="book-btn" id="bookSlotBtn" onclick="bookSlot()">✅ Book My Free Call</button>
       <p style="text-align:center;font-size:12px;color:var(--gray-mid);margin-top:12px">🔒 First call is free · Further sessions charged per package</p>
     </div>
   </div>
 </section>
 
 <!-- DATABASE ADMIN -->
+<section class="db-section hidden" id="adminDashboard">
+  <div class="section-title">Admin Dashboard</div>
+
+  <div class="stats-row">
+    <div class="stat-mini"><div class="sm-num" id="stat-total">0</div><div class="sm-label">Total Enquiries</div></div>
+    <div class="stat-mini"><div class="sm-num" id="stat-new">0</div><div class="sm-label">New / Uncontacted</div></div>
+    <div class="stat-mini"><div class="sm-num" id="stat-enrolled">0</div><div class="sm-label">Enrolled</div></div>
+    <div class="stat-mini"><div class="sm-num" id="stat-bookings">0</div><div class="sm-label">Calls Booked</div></div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:32px">
+    <div class="stat-mini">
+      <div style="margin-bottom:10px;font-size:13px;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:1px">By Stream</div>
+      <div id="stream-breakdown"><p style="color:rgba(255,255,255,0.3);font-size:13px">Loading…</p></div>
+    </div>
+    <div class="stat-mini">
+      <div style="margin-bottom:10px;font-size:13px;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:1px">By Course Interest</div>
+      <div id="course-breakdown"><p style="color:rgba(255,255,255,0.3);font-size:13px">Loading…</p></div>
+    </div>
+  </div>
+
+  <div class="admin-tabs">
+    <button class="admin-tab active" onclick="switchAdminTab('enquiriesPanel', this)">Enquiries</button>
+    <button class="admin-tab" onclick="switchAdminTab('bookingsPanel', this)">Bookings</button>
+  </div>
+
+  <div class="admin-panel active" id="enquiriesPanel">
+    <div class="db-controls">
+      <input type="text" class="db-search" id="db-search" placeholder="Search name, phone, email, city…" onkeydown="if(event.key==='Enter')renderDB(1)">
+      <select class="status-select" id="db-status-filter" onchange="renderDB(1)">
+        <option value="">All statuses</option>
+        <option>New</option><option>Contacted</option><option>Enrolled</option><option>Not interested</option>
+      </select>
+      <button class="db-export-btn" onclick="renderDB(1)">Search</button>
+      <button class="db-export-btn" onclick="exportCSV()">⬇ Export CSV</button>
+      <span class="db-count" id="db-count">0 enquiries total</span>
+    </div>
+    <div class="db-table-wrap">
+      <table class="db-table">
+        <thead><tr>
+          <th>#</th><th>Date</th><th>Name</th><th>Phone</th><th>Email</th><th>Class</th><th>Stream</th><th>Course</th><th>City</th><th>Message</th><th>Status</th><th>Actions</th>
+        </tr></thead>
+        <tbody id="db-body"><tr><td colspan="12" class="db-empty">Loading…</td></tr></tbody>
+      </table>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px">
+      <span style="font-size:12px;color:rgba(255,255,255,0.4)" id="db-pagination"></span>
+      <div style="display:flex;gap:8px">
+        <button class="db-export-btn" style="background:rgba(255,255,255,0.1);color:var(--white)" onclick="enquiryPrevPage()">← Prev</button>
+        <button class="db-export-btn" style="background:rgba(255,255,255,0.1);color:var(--white)" onclick="enquiryNextPage()">Next →</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-panel" id="bookingsPanel">
+    <div class="db-table-wrap">
+      <table class="db-table">
+        <thead><tr>
+          <th>#</th><th>Booked On</th><th>Name</th><th>Phone</th><th>Slot</th><th>Type</th><th>Stream</th><th>Course</th><th>Status</th><th>Actions</th>
+        </tr></thead>
+        <tbody id="booking-db-body"><tr><td colspan="10" class="db-empty">Loading…</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div style="text-align:center;margin-top:32px">
+    <button class="db-export-btn" style="background:rgba(239,68,68,0.15);color:#f87171" onclick="adminLogout()">Log Out</button>
+  </div>
+</section>
 
 <!-- BLOG SECTION -->
 <section class="blog-section" id="blog">
@@ -485,7 +551,7 @@
         <div class="form-group"><label>City</label><input type="text" id="f-city" placeholder="Your city"></div>
         <div class="form-group"><label>Anything specific?</label><input type="text" id="f-msg" placeholder="E.g. Hotel Management after 12th PCB…"></div>
       </div>
-      <button class="form-submit" type="button" onclick="submitEnquiry()">Submit Enquiry — We'll Call Within 24 Hours →</button>
+      <button class="form-submit" type="button" id="enquirySubmitBtn" onclick="submitEnquiry()">Submit Enquiry — We'll Call Within 24 Hours →</button>
     </div>
   </div>
 </section>
@@ -518,10 +584,11 @@
   </div>
   <div class="footer-bottom">
     <p>© 2025 Sarvpratham Education Consultants. All rights reserved.</p>
-    <p>Built with ❤️ for students & families</p>
+    <p>Built with ❤️ for students & families · <a href="#" onclick="requireAdmin();return false;" style="color:rgba(255,255,255,0.25)">Admin</a></p>
   </div>
 </footer>
 
+<script src="config.js"></script>
 <script src="main.js"></script>
 </body>
 </html>
