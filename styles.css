@@ -9,7 +9,8 @@ body{font-family:'DM Sans',sans-serif;color:var(--text-dark);background:var(--cr
 
 /* NAV */
 nav{background:var(--navy);padding:0 5%;display:flex;align-items:center;justify-content:space-between;height:68px;position:sticky;top:0;z-index:100}
-.logo{font-family:'Playfair Display',serif;font-size:22px;color:var(--white);letter-spacing:0.5px}
+.logo{font-family:'Playfair Display',serif;font-size:22px;color:var(--white);letter-spacing:0.5px;display:flex;align-items:center;gap:10px}
+.logo-img{height:42px;width:auto;display:block}
 .logo span{color:var(--gold)}
 .nav-links{display:flex;gap:32px;list-style:none}
 .nav-links a{color:rgba(255,255,255,0.8);text-decoration:none;font-size:14px;font-weight:500;transition:color .2s}
@@ -256,6 +257,7 @@ footer{background:#081525;padding:50px 5% 28px}
 @media(max-width:768px){
   nav{padding:0 4%;height:60px}
   .logo{font-size:17px}
+  .logo-img{height:32px}
   .nav-links{display:none}
   .nav-cta{padding:8px 14px;font-size:13px}
   .hero{grid-template-columns:1fr;padding:50px 5% 44px;gap:32px}
