@@ -8,4 +8,4 @@
 //   window.API_BASE_URL = 'https://api.sarvprathameduconsultants.com/api';
 //   window.API_BASE_URL = 'https://sarvprathameduconsultants.com:4000/api';
 
-window.API_BASE_URL = 'https://counselling-backend-iq2l.onrender.com/api';
+window.API_BASE_URL = 'https://counselling-backend-1fix.onrender.com/api';
