@@ -95,300 +95,54 @@ function selectCourse(stream, courseId, item) {
   if (detail) detail.classList.add('active');
 }
 
-// ===== BACKEND API HELPER =====
-const API_BASE = window.API_BASE_URL || '/api';
-const ADMIN_TOKEN_KEY = 'sp_admin_token';
 
-function getAdminToken() { return localStorage.getItem(ADMIN_TOKEN_KEY) || ''; }
-function setAdminToken(t) { localStorage.setItem(ADMIN_TOKEN_KEY, t); }
-function clearAdminToken() { localStorage.removeItem(ADMIN_TOKEN_KEY); }
+// ===== BACKEND API CONFIG =====
+// Point this at your deployed FastAPI backend (e.g. https://sarvpratham-backend.onrender.com)
+const API_BASE = window.SP_API_BASE || 'https://counselling-backend-1fix.onrender.com';
 
 async function apiFetch(path, options = {}) {
-  const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
-  const res = await fetch(API_BASE + path, { ...options, headers });
-  let data = null;
-  try { data = await res.json(); } catch (e) { /* no JSON body, e.g. 204 */ }
+  const headers = Object.assign({ 'Content-Type': 'application/json' }, options.headers || {});
+  const res = await fetch(API_BASE + path, Object.assign({}, options, { headers }));
   if (!res.ok) {
-    if (res.status === 401) { clearAdminToken(); adminUnlocked = false; }
-    throw new Error((data && data.error) || 'Something went wrong. Please try again.');
+    let detail = 'Request failed';
+    try { detail = (await res.json()).detail || detail; } catch(e) {}
+    throw new Error(detail);
   }
-  return data;
+  if (res.status === 204) return null;
+  return res.json();
 }
 
-function adminFetch(path, options = {}) {
-  return apiFetch(path, { ...options, headers: { ...(options.headers || {}), Authorization: 'Bearer ' + getAdminToken() } });
-}
-
-// ===== ADMIN AUTH =====
-let adminUnlocked = false;
-
-async function checkAdminPwd() {
-  const username = (document.getElementById('adminUserInput').value || 'admin').trim();
-  const password = document.getElementById('adminPwdInput').value;
-  const errBox = document.getElementById('adminLoginError');
-  errBox.style.display = 'none';
-  try {
-    const { token } = await apiFetch('/admin/login', { method: 'POST', body: JSON.stringify({ username, password }) });
-    setAdminToken(token);
-    adminUnlocked = true;
-    document.getElementById('adminLoginOverlay').classList.remove('open');
-    document.getElementById('adminPwdInput').value = '';
-    showAdminDashboard();
-  } catch (err) {
-    errBox.textContent = err.message || 'Incorrect username or password.';
-    errBox.style.display = 'block';
-    document.getElementById('adminPwdInput').value = '';
-  }
-}
-
-function showAdminDashboard() {
-  document.getElementById('adminDashboard').classList.remove('hidden');
-  renderDB();
-  renderBookingDB();
-  renderAdminStats();
-  document.getElementById('adminDashboard').scrollIntoView({ behavior: 'smooth' });
-}
-
-function adminLogout() {
-  clearAdminToken();
-  adminUnlocked = false;
-  document.getElementById('adminDashboard').classList.add('hidden');
-  showToast('Logged out of admin dashboard.');
-}
-
-async function requireAdmin() {
-  if (adminUnlocked) { showAdminDashboard(); return true; }
-  const token = getAdminToken();
-  if (token) {
-    try {
-      await apiFetch('/admin/me', { headers: { Authorization: 'Bearer ' + token } });
-      adminUnlocked = true;
-      showAdminDashboard();
-      return true;
-    } catch (e) { /* token expired/invalid, fall through to login prompt */ }
-  }
-  document.getElementById('adminLoginOverlay').classList.add('open');
-  return false;
-}
-
-// ===== ENQUIRY DB =====
-let enquiryPage = 1;
-const ENQUIRY_PAGE_SIZE = 25;
-
-function fmtDate(iso) {
-  if (!iso) return '';
-  return new Date(iso).toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-}
-
-async function renderDB(page) {
-  if (!adminUnlocked) return;
-  enquiryPage = page || enquiryPage;
-  const search = document.getElementById('db-search').value.trim();
-  const status = document.getElementById('db-status-filter').value;
-  const tbody = document.getElementById('db-body');
-  try {
-    const params = new URLSearchParams({ page: enquiryPage, pageSize: ENQUIRY_PAGE_SIZE });
-    if (search) params.set('search', search);
-    if (status) params.set('status', status);
-    const result = await adminFetch('/admin/enquiries?' + params.toString());
-    const data = result.data;
-    document.getElementById('db-count').textContent = result.total + ' enquir' + (result.total === 1 ? 'y' : 'ies') + ' total · page ' + result.page;
-    document.getElementById('db-pagination').textContent = data.length ? `Showing ${(result.page - 1) * result.pageSize + 1}–${(result.page - 1) * result.pageSize + data.length} of ${result.total}` : '';
-    if (!data.length) { tbody.innerHTML = '<tr><td colspan="12" class="db-empty">No enquiries found.</td></tr>'; return; }
-    tbody.innerHTML = data.map((r) => `
-      <tr>
-        <td>${r.id}</td>
-        <td>${fmtDate(r.created_at)}</td>
-        <td><strong>${esc(r.name)}</strong></td>
-        <td><a href="tel:${esc(r.phone)}" style="color:var(--gold)">${esc(r.phone)}</a></td>
-        <td>${esc(r.email)}</td>
-        <td>${esc(r.current_class)}</td>
-        <td>${esc(r.stream)}</td>
-        <td>${esc(r.course)}</td>
-        <td>${esc(r.city)}</td>
-        <td title="${esc(r.message)}" style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(r.message ? r.message.slice(0, 40) + (r.message.length > 40 ? '…' : '') : '')}</td>
-        <td>
-          <select class="status-select" onchange="updateEnquiryStatus(${r.id}, this.value)">
-            <option ${r.status === 'New' ? 'selected' : ''}>New</option>
-            <option ${r.status === 'Contacted' ? 'selected' : ''}>Contacted</option>
-            <option ${r.status === 'Enrolled' ? 'selected' : ''}>Enrolled</option>
-            <option ${r.status === 'Not interested' ? 'selected' : ''}>Not interested</option>
-          </select>
-        </td>
-        <td style="display:flex;gap:6px">
-          <a class="db-wa-btn" href="https://wa.me/91${r.phone.replace(/\D/g,'')}?text=Hi%20${encodeURIComponent(r.name)}%2C%20this%20is%20Sarvpratham%20Education%20Consultants.%20We%20received%20your%20enquiry%20and%20would%20love%20to%20connect!" target="_blank">WhatsApp</a>
-          <button class="db-delete-btn" onclick="deleteEnquiry(${r.id})">✕</button>
-        </td>
-      </tr>
-    `).join('');
-  } catch (err) {
-    tbody.innerHTML = `<tr><td colspan="12" class="db-empty">${esc(err.message)}</td></tr>`;
-  }
-}
-
-function enquiryPrevPage() { if (enquiryPage > 1) renderDB(enquiryPage - 1); }
-function enquiryNextPage() { renderDB(enquiryPage + 1); }
-
-async function updateEnquiryStatus(id, status) {
-  try {
-    await adminFetch('/admin/enquiries/' + id, { method: 'PATCH', body: JSON.stringify({ status }) });
-    renderAdminStats();
-  } catch (err) {
-    showToast(err.message);
-    renderDB();
-  }
-}
-
-async function deleteEnquiry(id) {
-  if (!confirm('Delete this enquiry? This cannot be undone.')) return;
-  try {
-    await adminFetch('/admin/enquiries/' + id, { method: 'DELETE' });
-    renderDB();
-    renderAdminStats();
-  } catch (err) {
-    showToast(err.message);
-  }
-}
-
-async function exportCSV() {
-  try {
-    const res = await fetch(API_BASE + '/admin/enquiries-export', { headers: { Authorization: 'Bearer ' + getAdminToken() } });
-    if (!res.ok) throw new Error('Export failed. Please log in again.');
-    const blob = await res.blob();
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'enquiries_' + new Date().toISOString().slice(0, 10) + '.csv';
-    a.click();
-    URL.revokeObjectURL(url);
-  } catch (err) {
-    showToast(err.message);
-  }
-}
-
-// ===== BOOKING DB =====
-async function renderBookingDB() {
-  if (!adminUnlocked) return;
-  const tbody = document.getElementById('booking-db-body');
-  try {
-    const result = await adminFetch('/admin/bookings?page=1&pageSize=50');
-    const data = result.data;
-    if (!data.length) { tbody.innerHTML = '<tr><td colspan="10" class="db-empty">No bookings yet.</td></tr>'; return; }
-    tbody.innerHTML = data.map((r) => `
-      <tr>
-        <td>${r.id}</td>
-        <td>${fmtDate(r.created_at)}</td>
-        <td><strong>${esc(r.name)}</strong></td>
-        <td><a href="tel:${esc(r.phone)}" style="color:var(--gold)">${esc(r.phone)}</a></td>
-        <td>${esc(r.day_label)}, ${esc(r.time_slot)}</td>
-        <td>${esc(r.session_type)}</td>
-        <td>${esc(r.stream)}</td>
-        <td>${esc(r.course)}</td>
-        <td>
-          <select class="status-select" onchange="updateBookingStatus(${r.id}, this.value)">
-            <option ${r.status === 'Confirmed' ? 'selected' : ''}>Confirmed</option>
-            <option ${r.status === 'Completed' ? 'selected' : ''}>Completed</option>
-            <option ${r.status === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
-            <option ${r.status === 'No-show' ? 'selected' : ''}>No-show</option>
-          </select>
-        </td>
-        <td><button class="db-delete-btn" onclick="deleteBooking(${r.id})">✕</button></td>
-      </tr>
-    `).join('');
-  } catch (err) {
-    tbody.innerHTML = `<tr><td colspan="10" class="db-empty">${esc(err.message)}</td></tr>`;
-  }
-}
-
-async function updateBookingStatus(id, status) {
-  try {
-    await adminFetch('/admin/bookings/' + id, { method: 'PATCH', body: JSON.stringify({ status }) });
-    renderAdminStats();
-  } catch (err) {
-    showToast(err.message);
-    renderBookingDB();
-  }
-}
-
-async function deleteBooking(id) {
-  if (!confirm('Delete this booking? This cannot be undone.')) return;
-  try {
-    await adminFetch('/admin/bookings/' + id, { method: 'DELETE' });
-    renderBookingDB();
-    renderAdminStats();
-  } catch (err) {
-    showToast(err.message);
-  }
-}
-
-// ===== ADMIN STATS =====
-async function renderAdminStats() {
-  if (!adminUnlocked) return;
-  try {
-    const s = await adminFetch('/admin/stats');
-    document.getElementById('stat-total').textContent = s.totalEnquiries;
-    document.getElementById('stat-new').textContent = s.newEnquiries;
-    document.getElementById('stat-enrolled').textContent = s.enrolledEnquiries;
-    document.getElementById('stat-bookings').textContent = s.totalBookings;
-
-    const sb = document.getElementById('stream-breakdown');
-    if (sb) sb.innerHTML = s.streamBreakdown.map(({ stream, count }) => `
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.06);font-size:13px">
-        <span style="color:rgba(255,255,255,0.7)">${esc(stream)}</span>
-        <span style="color:var(--gold);font-weight:700">${count}</span>
-      </div>
-    `).join('') || '<p style="color:rgba(255,255,255,0.3);font-size:13px">No data yet.</p>';
-
-    const cb = document.getElementById('course-breakdown');
-    if (cb) cb.innerHTML = s.courseBreakdown.map(({ course, count }) => `
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.06);font-size:13px">
-        <span style="color:rgba(255,255,255,0.7)">${esc(course)}</span>
-        <span style="color:var(--gold);font-weight:700">${count}</span>
-      </div>
-    `).join('') || '<p style="color:rgba(255,255,255,0.3);font-size:13px">No data yet.</p>';
-  } catch (err) {
-    showToast(err.message);
-  }
-}
-
-function switchAdminTab(id, el) {
-  document.querySelectorAll('.admin-tab').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
-  document.querySelectorAll('.admin-panel').forEach(p=>p.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-}
-
-// ===== FORM SUBMIT =====
 function scrollToEnquiry() { document.getElementById('enquiry').scrollIntoView({behavior:'smooth'}); }
 
 async function submitEnquiry() {
   const name = document.getElementById('f-name').value.trim();
   const phone = document.getElementById('f-phone').value.trim();
-  if (!name || !phone) { showToast('Please enter your name and phone number.'); return; }
+  if (!name || !phone) { alert('Please enter your name and phone number.'); return; }
 
-  const payload = {
-    name, phone,
-    email: document.getElementById('f-email').value.trim(),
-    currentClass: document.getElementById('f-class').value,
-    stream: document.getElementById('f-stream').value,
-    course: document.getElementById('f-course').value,
-    city: document.getElementById('f-city').value.trim(),
-    message: document.getElementById('f-msg').value.trim(),
-  };
-
-  const btn = document.getElementById('enquirySubmitBtn');
-  if (btn) { btn.disabled = true; btn.textContent = 'Submitting…'; }
+  const btn = document.querySelector('.form-submit');
+  const originalText = btn ? btn.textContent : '';
+  if (btn) { btn.disabled = true; btn.textContent = 'Submitting...'; }
 
   try {
-    await apiFetch('/enquiries', { method: 'POST', body: JSON.stringify(payload) });
+    await apiFetch('/api/enquiries', {
+      method: 'POST',
+      body: JSON.stringify({
+        name, phone,
+        email: document.getElementById('f-email').value.trim(),
+        student_class: document.getElementById('f-class').value,
+        stream: document.getElementById('f-stream').value,
+        course: document.getElementById('f-course').value,
+        city: document.getElementById('f-city').value.trim(),
+        message: document.getElementById('f-msg').value.trim(),
+      })
+    });
     ['f-name','f-phone','f-email','f-city','f-msg'].forEach(id=>document.getElementById(id).value='');
     ['f-class','f-stream','f-course'].forEach(id=>document.getElementById(id).selectedIndex=0);
     showToast('✓ Enquiry submitted! We\'ll call you within 24 hours.');
-    if (adminUnlocked) { renderDB(); renderAdminStats(); }
-  } catch (err) {
-    showToast(err.message || 'Could not submit your enquiry. Please try again.');
+  } catch (e) {
+    alert('Sorry, we could not submit your enquiry: ' + e.message + '\nPlease try again or call us directly.');
   } finally {
-    if (btn) { btn.disabled = false; btn.textContent = 'Submit Enquiry — We\'ll Call Within 24 Hours →'; }
+    if (btn) { btn.disabled = false; btn.textContent = originalText; }
   }
 }
 
@@ -401,48 +155,67 @@ function showToast(msg) {
 }
 
 // ===== BOOKING =====
-let selectedDay = '', selectedDayIso = '', selectedTime = '', selectedType = '📞 Phone Call';
-const SESSION_TYPE_MAP = { '📞 Phone Call': 'Phone Call', '🎥 Google Meet': 'Google Meet', '💬 WhatsApp': 'WhatsApp' };
+let selectedDayISO = '', selectedDayLabel = '', selectedTime = '', selectedType = 'Phone Call';
 
 function setSlotType(btn, type) {
-  selectedType = type;
+  // type comes in as an emoji-labelled string from the HTML onclick, e.g. "📞 Phone Call"
+  selectedType = type.replace(/^[^\w]+\s*/, '').trim() || type;
   document.querySelectorAll('.slot-type-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
 }
 
-function initSlots() {
-  const days = [], times = ['9:00 AM','10:00 AM','11:00 AM','12:00 PM','2:00 PM','3:00 PM','4:00 PM','5:00 PM','6:00 PM'];
+async function initSlots() {
   const today = new Date();
+  const days = [];
   for(let i=1; i<=7; i++) {
     const d = new Date(today); d.setDate(today.getDate()+i);
+    const iso = d.toISOString().slice(0,10);
     const label = d.toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'});
-    days.push({label, iso: d.toISOString().slice(0,10)});
+    days.push({label, iso});
   }
+
+  let calendar = [];
+  try {
+    calendar = await apiFetch('/api/bookings/calendar');
+  } catch (e) {
+    // If the backend is unreachable, still render days so the form isn't blank;
+    // the actual booking attempt will surface the error.
+  }
+  const fullByDate = {};
+  calendar.forEach(c => { fullByDate[c.date] = c.is_full; });
+
   const daysRow = document.getElementById('slotDays');
   daysRow.innerHTML = days.map(d=>`
-    <button class="slot-day" onclick="pickDay('${d.iso}','${d.label}',this)" data-iso="${d.iso}">
+    <button class="slot-day ${fullByDate[d.iso] ? 'full' : ''}" onclick="pickDay('${d.iso}','${d.label}',this)" data-iso="${d.iso}">
       ${d.label.split(' ')[0]}<br><strong>${d.label.split(' ').slice(1).join(' ')}</strong>
     </button>
   `).join('');
 
-  const timesRow = document.getElementById('slotTimes');
-  timesRow.innerHTML = times.map(t=>`<button class="slot-time" onclick="pickTime('${t}',this)">${t}</button>`).join('');
+  document.getElementById('slotTimes').innerHTML = '<p style="color:rgba(0,0,0,0.4);font-size:13px">Pick a day first</p>';
 }
 
 async function pickDay(iso, label, btn) {
-  selectedDay = label;
-  selectedDayIso = iso;
+  selectedDayISO = iso;
+  selectedDayLabel = label;
   selectedTime = '';
   document.querySelectorAll('.slot-day').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-  document.querySelectorAll('.slot-time').forEach(b=>b.classList.remove('booked','active'));
+
+  const timesRow = document.getElementById('slotTimes');
+  timesRow.innerHTML = '<p style="color:rgba(0,0,0,0.4);font-size:13px">Loading times…</p>';
+
   try {
-    const { bookedTimes } = await apiFetch('/bookings/availability?date=' + iso);
-    document.querySelectorAll('.slot-time').forEach(b=>{
-      if (bookedTimes.includes(b.textContent.trim())) b.classList.add('booked');
-    });
-  } catch (err) {
-    showToast('Could not load availability for that day. Please try again.');
+    const data = await apiFetch('/api/bookings/available-slots?slot_date=' + iso);
+    const allTimes = data.booked_times.concat(data.available_times);
+    // Preserve a sensible chronological order rather than booked-then-available
+    const ORDER = ['9:00 AM','10:00 AM','11:00 AM','12:00 PM','2:00 PM','3:00 PM','4:00 PM','5:00 PM','6:00 PM'];
+    const ordered = ORDER.filter(t => allTimes.includes(t));
+    timesRow.innerHTML = ordered.map(t => {
+      const isBooked = data.booked_times.includes(t);
+      return `<button class="slot-time ${isBooked?'booked':''}" onclick="pickTime('${t}',this)">${t}</button>`;
+    }).join('');
+  } catch (e) {
+    timesRow.innerHTML = '<p style="color:#c0392b;font-size:13px">Could not load slots: ' + esc(e.message) + '</p>';
   }
 }
 
@@ -456,37 +229,41 @@ function pickTime(time, btn) {
 async function bookSlot() {
   const name = document.getElementById('b-name').value.trim();
   const phone = document.getElementById('b-phone').value.trim();
-  if(!name||!phone) { showToast('Please enter your name and phone.'); return; }
-  if(!selectedDay) { showToast('Please select a day.'); return; }
-  if(!selectedTime) { showToast('Please select a time slot.'); return; }
+  if(!name||!phone) { alert('Please enter your name and phone.'); return; }
+  if(!selectedDayISO) { alert('Please select a day.'); return; }
+  if(!selectedTime) { alert('Please select a time slot.'); return; }
 
-  const payload = {
-    name, phone,
-    sessionType: SESSION_TYPE_MAP[selectedType] || 'Phone Call',
-    date: selectedDayIso,
-    dayLabel: selectedDay,
-    time: selectedTime,
-    stream: document.getElementById('b-stream').value,
-    course: document.getElementById('b-course').value,
-  };
-
-  const btn = document.getElementById('bookSlotBtn');
-  if (btn) { btn.disabled = true; }
+  const btn = document.querySelector('.book-btn');
+  const originalText = btn ? btn.textContent : '';
+  if (btn) { btn.disabled = true; btn.textContent = 'Booking...'; }
 
   try {
-    await apiFetch('/bookings', { method: 'POST', body: JSON.stringify(payload) });
-    document.querySelectorAll('.slot-time').forEach(b=>{ if(b.textContent.trim()===selectedTime) b.classList.add('booked'); b.classList.remove('active'); });
-    const bookedTime = selectedTime, bookedDay = selectedDay;
-    selectedTime = '';
+    await apiFetch('/api/bookings', {
+      method: 'POST',
+      body: JSON.stringify({
+        name, phone,
+        slot_date: selectedDayISO,
+        slot_time: selectedTime,
+        session_type: selectedType,
+        stream: document.getElementById('b-stream').value,
+        course: document.getElementById('b-course').value,
+      })
+    });
+    showToast('📅 Slot booked! We\'ll call you at ' + selectedTime + ' on ' + selectedDayLabel);
     document.getElementById('b-name').value=''; document.getElementById('b-phone').value='';
     document.getElementById('b-stream').selectedIndex=0; document.getElementById('b-course').selectedIndex=0;
-    showToast('📅 Slot booked! We\'ll call you at ' + bookedTime + ' on ' + bookedDay);
-    if(adminUnlocked) { renderBookingDB(); renderAdminStats(); }
-  } catch (err) {
-    showToast(err.message || 'Could not book this slot. Please try again.');
-    if (selectedDayIso) pickDay(selectedDayIso, selectedDay, document.querySelector('.slot-day.active'));
+    const bookedTime = selectedTime;
+    selectedTime = '';
+    // Refresh the time grid for this day so the just-booked slot now shows as booked
+    const activeDayBtn = document.querySelector('.slot-day.active');
+    if (activeDayBtn) pickDay(selectedDayISO, selectedDayLabel, activeDayBtn);
+  } catch (e) {
+    // 409 means someone else grabbed the slot first - refresh times to show current state
+    alert('Could not book this slot: ' + e.message);
+    const activeDayBtn = document.querySelector('.slot-day.active');
+    if (activeDayBtn) pickDay(selectedDayISO, selectedDayLabel, activeDayBtn);
   } finally {
-    if (btn) { btn.disabled = false; }
+    if (btn) { btn.disabled = false; btn.textContent = originalText; }
   }
 }
 
@@ -728,20 +505,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initSlots();
   renderBlog();
   renderServices('pcm'); // default stream
-  restoreAdminSession();
 });
-
-async function restoreAdminSession() {
-  const token = getAdminToken();
-  if (!token) return;
-  try {
-    await apiFetch('/admin/me', { headers: { Authorization: 'Bearer ' + token } });
-    adminUnlocked = true;
-    showAdminDashboard();
-  } catch (e) {
-    clearAdminToken();
-  }
-}
 
 // Close blog modal on overlay click
 document.addEventListener('click', e => {
