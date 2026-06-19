@@ -1,12 +1,125 @@
 // ===== STREAM / COURSE SELECTOR =====
+
+// Stream-to-courses mapping used for dropdowns (enquiry + booking forms)
+const STREAM_COURSES = {
+  'PCM (Science)': [
+    'B.Tech / Engineering',
+    'B.Sc Computer Science',
+    'BCA (Computer Applications)',
+    'B.Sc Mathematics',
+    'B.Sc Statistics',
+    'B.Sc Physics',
+    'B.Arch (Architecture)',
+    'B.Des (Design / UCEED)',
+    'BHM (Hotel Management)',
+    'MBA (after graduation)',
+    'MCA (Master of Computer Applications)',
+    'M.Tech / GATE',
+    'Not sure yet'
+  ],
+  'PCB (Biology)': [
+    'MBBS (Medical)',
+    'BDS (Dentistry)',
+    'B.Pharm (Pharmacy)',
+    'B.Sc Nursing',
+    'BPT (Physiotherapy)',
+    'B.Sc Biotechnology',
+    'B.Sc Microbiology',
+    'BAMS (Ayurveda)',
+    'BHMS (Homeopathy)',
+    'B.Sc Radiology / Imaging',
+    'BOT (Occupational Therapy)',
+    'BHM (Hotel Management)',
+    'Not sure yet'
+  ],
+  'Commerce with Maths': [
+    'B.Com (Hons)',
+    'BBA / BMS',
+    'CA (Chartered Accountancy)',
+    'CMA (Cost Accounting)',
+    'BA Economics (Hons)',
+    'BA LLB / BBA LLB (Law)',
+    'B.Sc Statistics / Actuarial',
+    'BCA (Computer Applications)',
+    'BJMC / Mass Communication',
+    'BHM (Hotel Management)',
+    'MBA (CAT / XAT / CMAT)',
+    'Not sure yet'
+  ],
+  'Commerce without Maths': [
+    'B.Com (General)',
+    'BBA',
+    'BA LLB (Law)',
+    'BJMC / Mass Communication',
+    'BHM (Hotel Management)',
+    'B.Ed (Teacher Training)',
+    'BA Economics (Hons)',
+    'Event Management',
+    'Fashion Design / Retail Mgmt',
+    'Not sure yet'
+  ],
+  'Humanities': [
+    'BA LLB / BBA LLB (Law)',
+    'BJMC / Journalism & Mass Comm',
+    'BA Psychology (Hons)',
+    'BA English / Political Science',
+    'BA History / Sociology',
+    'B.Ed (Teacher Training)',
+    'BHM (Hotel Management)',
+    'BA Social Work (BSW)',
+    'BA Fine Arts / Performing Arts',
+    'Civil Services (UPSC Prep)',
+    'Event Management',
+    'Not sure yet'
+  ]
+};
+
+// Key used to look up stream in enquiry form
+const ENQUIRY_STREAM_MAP = {
+  'PCM (Science)': 'PCM (Science)',
+  'PCB (Biology)': 'PCB (Biology)',
+  'Commerce with Maths': 'Commerce with Maths',
+  'Commerce without Maths': 'Commerce without Maths',
+  'Humanities': 'Humanities'
+};
+
+// Update the course dropdown based on selected stream
+function updateCourseDropdown(streamSelectId, courseSelectId) {
+  const streamVal = document.getElementById(streamSelectId).value;
+  const courseSelect = document.getElementById(courseSelectId);
+  courseSelect.innerHTML = '<option value="">Select course interest</option>';
+  const courses = STREAM_COURSES[streamVal];
+  if (courses) {
+    courses.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      courseSelect.appendChild(opt);
+    });
+    courseSelect.disabled = false;
+  } else {
+    // No stream selected — show all courses
+    const all = [...new Set(Object.values(STREAM_COURSES).flat())].sort();
+    all.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      courseSelect.appendChild(opt);
+    });
+  }
+}
+
 const STREAM_SERVICES = {
   pcm: {
     tag: 'What We Offer — PCM (Science)',
-    sub: 'Complete guidance for PCM students — Engineering, Computer Science, Maths, BCA and more.',
+    sub: 'Complete guidance for PCM students — Engineering, Architecture, Design, Computer Science, Maths, BCA and more.',
     cards: [
       {icon:'⚙️', title:'B.Tech / Engineering', desc:'JEE Main & Advanced strategy, rank-to-college mapping for IIT Delhi, DTU, NSIT, NIT and top private colleges.', items:['JEE Main & Advanced prep guidance','Branch selection strategy','GGSIPU / IPU CET colleges','Form-filling & counselling support']},
       {icon:'💻', title:'BCA / B.Sc Computer Science', desc:'For PCM students targeting IT careers without JEE pressure. IPU CET, DU CUET and direct admission guidance.', items:['IPU CET & CUET shortlisting','Top BCA colleges in Delhi/NCR','Career path to MCA / M.Tech','Amity, JIIT, IP University guidance']},
-      {icon:'📐', title:'B.Sc Mathematics', desc:'Pure Maths at DU, JNU, BHU — leading to data science, research and civil services careers.', items:['CUET subject strategy','DU college preference filling','JNU & BHU entrance guidance','Career: Data Science, Teaching, Actuarial']},
+      {icon:'📐', title:'B.Sc Mathematics / Statistics', desc:'Pure Maths or Statistics at DU, JNU, BHU — leading to data science, research, actuarial and civil services careers.', items:['CUET subject strategy','DU college preference filling','JNU & BHU entrance guidance','Career: Data Science, Teaching, Actuarial']},
+      {icon:'🏛️', title:'B.Arch (Architecture)', desc:'PCM students with Maths in Class 12 can pursue B.Arch via JEE Paper 2 or NATA at top architecture schools.', items:['JEE Main Paper 2 (B.Arch)','NATA preparation guidance','SPA Delhi, IIT, NIT guidance','Portfolio & interview support']},
+      {icon:'🎨', title:'B.Des (Design / UCEED)', desc:'For PCM students with creative aptitude. UCEED (IITs), NID DAT, NIFT entrance guidance and portfolio prep.', items:['UCEED prep strategy','NID DAT guidance','NIFT Delhi shortlisting','Portfolio development tips']},
+      {icon:'⚗️', title:'B.Sc Physics / Chemistry', desc:'Honours science degrees at top DU, JNU and IISER colleges for research, defence and GATE pathways.', items:['CUET Science strategy','IISER Aptitude Test','IISc BS Research','DRDO / ISRO career paths']},
       {icon:'🏨', title:'BHM (Hotel Management)', desc:'PCM students can join IHM Delhi and top hotel schools via NCHMCT JEE. 20+ years of expertise.', items:['NCHMCT JEE preparation','IHM Delhi, Mumbai shortlisting','Hospitality career planning','Form-filling & college allotment']},
       {icon:'💼', title:'MBA (after graduation)', desc:'PCM graduates pivot to management via CAT, XAT. We guide B-school shortlisting and GD/PI prep.', items:['CAT / XAT / CMAT guidance','IIM, FMS Delhi, MDI Gurgaon','Operations & Tech Management','GD & PI preparation']},
       {icon:'🔬', title:'M.Tech / MCA', desc:'For B.Tech/BCA graduates seeking specialisation. GATE strategy and NIMCET college shortlisting.', items:['GATE score-to-college mapping','NIMCET for MCA admissions','IIT / NIT / DTU M.Tech guidance','PSU recruitment support']},
@@ -14,25 +127,33 @@ const STREAM_SERVICES = {
   },
   pcb: {
     tag: 'What We Offer — PCB (Biology)',
-    sub: 'Complete guidance for PCB students — Medical, Nursing, Pharmacy, Physiotherapy and Hotel Management.',
+    sub: 'Complete guidance for PCB students — Medical, Nursing, Pharmacy, Physiotherapy, Biotech and Hotel Management.',
     cards: [
       {icon:'🏥', title:'MBBS / Medical', desc:'NEET UG counselling, AIQ vs State quota strategy, private medical college admissions — 100+ students guided.', items:['NEET score-to-college mapping','AIQ & State quota strategy','Choice filling & locking support','AIIMS, MAMC, Lady Hardinge Delhi']},
       {icon:'🦷', title:'BDS (Dentistry)', desc:'NEET-based BDS admissions, state quota seats and MDS planning for Delhi/NCR and top colleges.', items:['NEET BDS counselling','State vs Management quota','Maulana Azad Dental, IP University','MDS specialisation planning']},
       {icon:'💊', title:'B.Pharm / Pharmacy', desc:'Pharmacy entrance guidance for Jamia Hamdard, Delhi Institute of Pharma and top private colleges.', items:['State Pharmacy CET guidance','Jamia Hamdard Delhi','GPAT planning for M.Pharm','Hospital & industry career paths']},
       {icon:'💉', title:'B.Sc Nursing', desc:'Government nursing entrances — AIIMS Nursing, PGIMER and state nursing CETs with full college shortlisting.', items:['AIIMS Nursing Entrance','PGIMER Chandigarh guidance','State nursing CET strategy','International nursing career paths']},
       {icon:'🏃', title:'BPT (Physiotherapy)', desc:'Physiotherapy admissions via IPU CET and Jamia for careers in sports, hospitals and clinics.', items:['IPU CET Physio guidance','JMI Delhi shortlisting','Sports & hospital Physio careers','IP University affiliated colleges']},
+      {icon:'🧫', title:'B.Sc Biotechnology / Microbiology', desc:'Growing field with opportunities in pharma R&D, biotech startups and research institutes.', items:['CUET Biology strategy','JNU, CUET, BHU entrances','DBT JRF / CSIR pathway','Pharma R&D & lab careers']},
+      {icon:'🌿', title:'BAMS / BHMS (Ayurveda / Homeopathy)', desc:'AYUSH stream via NEET — BAMS and BHMS admissions for students interested in traditional medicine.', items:['NEET AYUSH counselling','State AYUSH college lists','Private practice & clinics','PG: MD AYUSH pathway']},
+      {icon:'🩻', title:'B.Sc Radiology / Medical Imaging', desc:'Growing allied health career in hospitals. IPU CET and direct admission guidance for Delhi/NCR colleges.', items:['IPU CET Allied Health','Top radiology colleges Delhi/NCR','Hospital employment pathways','PG & specialisation options']},
       {icon:'🏨', title:'BHM (Hotel Management)', desc:'PCB students can also join IHM via NCHMCT JEE. We have 20+ years placing students in IHMs.', items:['NCHMCT JEE for PCB students','IHM Delhi & Mumbai guidance','F&B and culinary career paths','College shortlisting & forms']},
     ]
   },
   'com-math': {
     tag: 'What We Offer — Commerce with Maths',
-    sub: 'Complete guidance for Commerce + Maths students — B.Com, BBA, CA, Law, Economics and MBA.',
+    sub: 'Complete guidance for Commerce + Maths students — B.Com, BBA, CA, CMA, Law, Economics and MBA.',
     cards: [
       {icon:'📊', title:'B.Com (Hons)', desc:'SRCC, Hindu College, Ramjas — the most prestigious B.Com colleges via CUET. We specialise in DU preference strategy.', items:['CUET Commerce subject strategy','SRCC / Hindu / Ramjas shortlisting','JMI & IP University guidance','CA / CS / MBA career path planning']},
       {icon:'🏢', title:'BBA / BMS', desc:'DU JAT, IPU CET, Symbiosis SET — complete BBA college shortlisting for Delhi/NCR and top private colleges.', items:['DU JAT preparation','IPU CET BBA guidance','Symbiosis Pune SET','Christ, Amity, JIMS shortlisting']},
       {icon:'📋', title:'CA (Chartered Accountancy)', desc:'CA Foundation route, B.Com parallel pathway and articleship planning from ICAI-registered experts.', items:['CA Foundation strategy','B.Com + CA parallel plan','Big 4 & articleship guidance','Study timetable & exam plan']},
+      {icon:'📉', title:'CMA (Cost & Management Accountancy)', desc:'CMA Foundation via ICMAI — a growing alternative to CA with strong demand in manufacturing, PSUs and finance.', items:['CMA Foundation guidance','ICMAI registration support','PSU & corporate career paths','CMA + MBA dual pathway']},
       {icon:'⚖️', title:'BBA LLB (Law)', desc:'CLAT, AILET, SLAT — 20 years of law admission expertise. NLU, Symbiosis and Delhi law college shortlisting.', items:['CLAT & AILET preparation','NLU Delhi, NLU Jodhpur','Symbiosis Law Pune (SLAT)','Corporate & litigation career paths']},
       {icon:'📈', title:'B.A. Economics (Hons)', desc:'DU Economics Hons via CUET — SRCC, LSR, Hindu College. Leads to DSE, banking and civil services.', items:['CUET Economics strategy','SRCC, LSR, Hindu College','JNU Economics entrance','DSE M.A. & UPSC preparation']},
+      {icon:'📉', title:'B.Sc Statistics / Actuarial Science', desc:'Commerce + Maths students can pursue Statistics at DU or Actuarial Science (ACET) — high-paying niche career.', items:['CUET Statistics guidance','ACET exam preparation','Kirori Mal, Hindu College DU','Insurance & risk management careers']},
+      {icon:'💻', title:'BCA (Computer Applications)', desc:'Commerce students with Maths can join BCA programmes and enter the tech sector via coding and IT roles.', items:['IPU CET BCA guidance','Amity, Maharaja Agrasen Delhi','MCA pathway after BCA','Tech + business hybrid career']},
+      {icon:'🎬', title:'BJMC / Mass Communication', desc:'Commerce students can pursue BJMC at IPU, JMI, Symbiosis for media, PR and digital marketing careers.', items:['IPU CET BJMC & IIMC prep','JMI Delhi shortlisting','Symbiosis Pune SET','PR, Digital Media, Journalism']},
+      {icon:'🏨', title:'BHM (Hotel Management)', desc:'NCHMCT JEE for IHM Delhi, Mumbai — hospitality and tourism careers. 20+ years expertise.', items:['NCHMCT JEE guidance','IHM Delhi, Mumbai, IIHM','Tourism & hospitality careers','Form-filling & college allotment']},
       {icon:'💼', title:'MBA', desc:'Commerce + Maths is ideal for Finance MBA. CAT, XAT, CMAT guidance with top B-school shortlisting.', items:['CAT, XAT, CMAT, SNAP','FMS Delhi, MDI Gurgaon','IIM Lucknow, IMT Ghaziabad','Finance & Marketing specialisation']},
     ]
   },
@@ -46,18 +167,25 @@ const STREAM_SERVICES = {
       {icon:'🎬', title:'BJMC / Mass Communication', desc:'IPU CET BJMC, JMI, Symbiosis SET for journalism and media. IIMC entrance coaching support.', items:['IPU CET BJMC guidance','JMI & IIMC Delhi shortlisting','Symbiosis Pune SET','PR, Digital Media, Journalism paths']},
       {icon:'🏨', title:'BHM (Hotel Management)', desc:'NCHMCT JEE for IHM Delhi, Mumbai and top hotel schools. 20+ years of hospitality placement expertise.', items:['NCHMCT JEE guidance','IHM Delhi, Mumbai, IIHM','Tourism & hospitality careers','Form-filling & college allotment']},
       {icon:'📚', title:'B.Ed (Teacher Training)', desc:'Delhi B.Ed CET, JMI and state B.Ed entrances — for students aiming at TGT, PGT and KVS/NVS teaching jobs.', items:['Delhi B.Ed CET guidance','JMI & MDU Rohtak entrance','KVS / NVS / DSSSB planning','Top B.Ed college shortlisting']},
+      {icon:'📈', title:'BA Economics (Hons)', desc:'DU Economics via CUET for students who studied Business Maths — leads to banking, finance and civil services.', items:['CUET Economics guidance','DU college preference strategy','Banking & finance careers','UPSC preparation path']},
+      {icon:'🎪', title:'Event Management', desc:'Diploma and degree programmes in Event Management from top colleges — weddings, corporate events, PR.', items:['NIEM entrance','Pearl Academy, Amity guidance','Corporate & social events career','Internship-to-placement path']},
+      {icon:'👗', title:'Fashion / Retail Management', desc:'For commerce students interested in fashion business, retail chain management and e-commerce roles.', items:['Pearl Academy entrance','NIFT Business programme','Retail & e-commerce careers','Brand Management path']},
     ]
   },
   humanities: {
     tag: 'What We Offer — Humanities',
-    sub: 'Complete guidance for Humanities students — Law, Journalism, Psychology, B.Ed, Hotel Management and more.',
+    sub: 'Complete guidance for Humanities students — Law, Journalism, Psychology, B.Ed, Hotel Management, Social Work and more.',
     cards: [
       {icon:'⚖️', title:'BA LLB (Law)', desc:'Humanities is the perfect foundation for CLAT, AILET and SLAT. 20 years of NLU and Symbiosis placement expertise.', items:['CLAT, AILET, SLAT guidance','NLU Delhi, NALSAR, NLU Jodhpur','Symbiosis Law Pune','Litigation, Corporate & Judiciary paths']},
       {icon:'🎬', title:'BJMC / Journalism', desc:'IPU CET, JMI, IIMC, Symbiosis SET — humanities students excel in media and PR careers.', items:['IPU CET BJMC & IIMC prep','JMI Delhi (AJK MCRC)','LSR DU, Symbiosis Pune','Journalism, PR & Digital Media']},
       {icon:'🧠', title:'BA Psychology', desc:'LSR, JMI, Amity — Psychology via CUET for clinical, school counselling and organisational careers.', items:['CUET Psychology strategy','LSR, JMI, IP University','Clinical vs School Counselling','M.Phil / PhD pathways']},
-      {icon:'📝', title:'BA English / Political Science', desc:'Top DU and JNU colleges via CUET — leading to Civil Services, journalism, academia and law.', items:['CUET Humanities strategy','Miranda House, Hindu, LSR DU','JNU entrance guidance','UPSC, Journalism, Academia paths']},
+      {icon:'📝', title:'BA English / Political Science / History', desc:'Top DU and JNU colleges via CUET — leading to Civil Services, journalism, academia and law.', items:['CUET Humanities strategy','Miranda House, Hindu, LSR DU','JNU entrance guidance','UPSC, Journalism, Academia paths']},
+      {icon:'🌍', title:'BA Sociology / Geography', desc:'Growing fields for UPSC, NGO work, urban planning and social research. DU and JNU top picks.', items:['CUET Social Science guidance','DU & JNU shortlisting','NGO & development sector careers','UPSC mains optional strategy']},
+      {icon:'👥', title:'BA Social Work (BSW)', desc:'BSW and MSW degrees for careers in NGOs, government welfare departments and international organisations.', items:['CUET & JMI entrance','BSW at DU, JMI, TISS','TISS Mumbai entrance guidance','NGO, INGO & govt welfare jobs']},
       {icon:'📚', title:'B.Ed (Teacher Training)', desc:'The most direct path to government teaching jobs for Humanities. Delhi B.Ed CET, JMI and MDU guidance.', items:['Delhi B.Ed CET preparation','JMI & MDU Rohtak entrance','KVS, NVS, DSSSB teaching jobs','Top B.Ed college shortlisting']},
+      {icon:'🎭', title:'BA Fine Arts / Performing Arts', desc:'BFA and performing arts degrees for students passionate about visual arts, music, theatre and dance.', items:['BFA at Delhi College of Art','CUET Fine Arts','Lalit Kala Akademi guidance','Theatre, dance & music careers']},
       {icon:'🏨', title:'BHM (Hotel Management)', desc:'Humanities students fit perfectly in Hotel Management — guest relations, HR and F&B. NCHMCT JEE guidance.', items:['NCHMCT JEE for Humanities','IHM Delhi, Mumbai guidance','Event & Tourism management','College shortlisting & forms']},
+      {icon:'🏛️', title:'Civil Services (UPSC Prep)', desc:'Humanities background is ideal for IAS/IPS. We guide on optional subjects, college choices and coaching strategy.', items:['Optional subject selection','Graduation + UPSC dual track','Coaching institute guidance','UPSC Prelims strategy']},
     ]
   }
 };
@@ -94,7 +222,6 @@ function selectCourse(stream, courseId, item) {
   const detail = document.getElementById('cd-' + stream + '-' + courseId);
   if (detail) detail.classList.add('active');
 }
-
 
 // ===== BACKEND API CONFIG =====
 // Point this at your deployed FastAPI backend (e.g. https://sarvpratham-backend.onrender.com)
