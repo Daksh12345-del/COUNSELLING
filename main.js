@@ -98,7 +98,7 @@ function selectCourse(stream, courseId, item) {
 
 // ===== BACKEND API CONFIG =====
 // Point this at your deployed FastAPI backend (e.g. https://sarvpratham-backend.onrender.com)
-const API_BASE = window.SP_API_BASE || 'https://counselling-backend-1fix.onrender.com';
+const API_BASE = window.SP_API_BASE || 'https://sarvpratham-backend.onrender.com';
 
 async function apiFetch(path, options = {}) {
   const headers = Object.assign({ 'Content-Type': 'application/json' }, options.headers || {});
