@@ -103,7 +103,7 @@ section{padding:80px 5%}
 .inst-badge{display:inline-block;margin-top:10px;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:rgba(212,168,64,0.1);color:var(--gold)}
 
 /* PROCESS */
-.process{background:#1B4D3E}
+.process{background:var(--navy)}
 .process .section-title{color:var(--white)}
 .process .section-sub{color:rgba(255,255,255,0.6)}
 .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0}
@@ -114,7 +114,7 @@ section{padding:80px 5%}
 .step p{font-size:13px;color:rgba(255,255,255,0.55);line-height:1.65}
 
 /* TESTIMONIALS */
-.testimonials{background:#1B4D3E}
+.testimonials{background:var(--navy)}
 .testimonials .section-title{color:var(--white)}
 .testimonials .section-sub{color:rgba(255,255,255,0.6)}
 .testi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:22px}
