@@ -9,9 +9,11 @@ body{font-family:'DM Sans',sans-serif;color:var(--text-dark);background:var(--cr
 
 /* NAV */
 nav{background:var(--navy);padding:0 5%;display:flex;align-items:center;justify-content:space-between;height:68px;position:sticky;top:0;z-index:100}
-.logo{display:flex;align-items:center;font-family:'Playfair Display',serif;font-size:22px;color:var(--white);letter-spacing:0.5px}
+.logo{display:flex;align-items:center;gap:10px;font-family:'Playfair Display',serif;font-size:22px;color:var(--white);letter-spacing:0.5px;text-decoration:none}
 .logo span{color:var(--gold)}
 .logo img{height:52px;width:auto;display:block}
+.logo-text{display:flex;flex-direction:column;line-height:1.15;font-size:20px}
+.logo-text span{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;letter-spacing:1px;text-transform:uppercase}
 .nav-links{display:flex;gap:32px;list-style:none}
 .nav-links a{color:rgba(255,255,255,0.8);text-decoration:none;font-size:14px;font-weight:500;transition:color .2s}
 .nav-links a:hover{color:var(--gold)}
@@ -256,8 +258,10 @@ footer{background:#081525;padding:50px 5% 28px}
 }
 @media(max-width:768px){
   nav{padding:0 4%;height:60px}
-  .logo{font-size:17px}
-  .logo img{height:40px}
+  .logo{font-size:17px;gap:8px}
+  .logo img{height:38px}
+  .logo-text{font-size:15px}
+  .logo-text span{font-size:9px}
   .nav-links{display:none}
   .nav-cta{padding:8px 14px;font-size:13px}
   .hero{grid-template-columns:1fr;padding:50px 5% 44px;gap:32px}
@@ -308,6 +312,7 @@ footer{background:#081525;padding:50px 5% 28px}
   .community-card{padding:22px 18px}
 }
 @media(max-width:480px){
+  .logo-text span{display:none}
   .hero h1{font-size:22px}
   .hero-tag{font-size:11px;padding:5px 12px}
   .stream-tab{padding:11px 10px;font-size:11px}
