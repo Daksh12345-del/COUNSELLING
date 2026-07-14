@@ -12,4 +12,4 @@
 //
 // Replace the value below with whatever URL your backend is ACTUALLY deployed at
 // (check your Render/Railway dashboard for the exact live URL).
-window.SP_API_BASE = 'https://sarvpratham-backend.onrender.com';
+window.SP_API_BASE = 'https://counselling-backend-xnu5.onrender.com';
