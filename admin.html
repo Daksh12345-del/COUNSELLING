@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Admin — Sarvpratham Education Consultants</title>
+<link rel="icon" href="favicon.ico">
+<style>
+  :root{
+    --navy:#0A1F3B;--navy-mid:#15335c;--navy-deep:#061225;
+    --gold:#C9A24B;--gold-light:#E8C878;--gold-deep:#A67F2E;
+    --cream:#FAF7F1;--white:#ffffff;--gray-light:#F3F0E9;--gray-mid:#96908A;
+    --text-dark:#18140F;--text-mid:#4E4A44;--border:#E5DFD2;
+    --r-sm:8px;--r-md:14px;--r-lg:20px;
+    --shadow-sm:0 2px 10px rgba(10,31,59,0.06);
+    --shadow-md:0 10px 32px rgba(10,31,59,0.10);
+    --green:#1c7a4d;--green-bg:#e8f5ee;
+    --red:#b3372c;--red-bg:#fbeceb;
+    --amber:#a67f2e;--amber-bg:#fbf3e2;
+    --ease:cubic-bezier(.22,1,.36,1);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Segoe UI',Arial,sans-serif;background:var(--cream);color:var(--text-dark);min-height:100vh}
+  a{color:inherit}
+
+  /* ---------- LOGIN ---------- */
+  #login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+  .login-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--shadow-md);padding:40px 36px;width:100%;max-width:380px}
+  .login-card h1{font-size:20px;color:var(--navy);margin-bottom:4px}
+  .login-card p{font-size:13px;color:var(--gray-mid);margin-bottom:24px}
+  .field{margin-bottom:16px}
+  .field label{display:block;font-size:12.5px;font-weight:600;color:var(--text-mid);margin-bottom:6px}
+  .field input{width:100%;padding:11px 13px;border:1px solid var(--border);border-radius:var(--r-sm);font-size:14.5px;background:var(--gray-light);outline:none;transition:border-color .2s var(--ease)}
+  .field input:focus{border-color:var(--gold)}
+  .btn{cursor:pointer;border:none;border-radius:var(--r-sm);font-weight:600;font-size:14px;transition:transform .15s var(--ease), box-shadow .15s var(--ease);}
+  .btn-primary{background:var(--navy);color:var(--white);padding:12px 20px;width:100%}
+  .btn-primary:hover{box-shadow:var(--shadow-sm);transform:translateY(-1px)}
+  .btn-primary:disabled{opacity:.6;cursor:not-allowed;transform:none}
+  #login-error{color:var(--red);font-size:13px;margin-top:14px;display:none;background:var(--red-bg);padding:10px 12px;border-radius:var(--r-sm)}
+
+  /* ---------- APP SHELL ---------- */
+  #app{display:none;min-height:100vh}
+  header.topbar{background:var(--navy);color:var(--white);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:20;box-shadow:0 2px 14px rgba(4,10,20,0.2)}
+  header.topbar .brand{font-size:16px;font-weight:600;letter-spacing:.3px}
+  header.topbar .brand span{color:var(--gold-light)}
+  header.topbar .actions{display:flex;align-items:center;gap:14px}
+  header.topbar .actions button{background:transparent;border:1px solid rgba(255,255,255,.28);color:var(--white);padding:8px 16px;border-radius:var(--r-sm);font-size:13px}
+  header.topbar .actions button:hover{background:rgba(255,255,255,.08)}
+
+  main{max-width:1180px;margin:0 auto;padding:28px 20px 60px}
+
+  .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:28px}
+  .stat-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r-md);padding:18px 20px;box-shadow:var(--shadow-sm)}
+  .stat-card .num{font-size:26px;font-weight:700;color:var(--navy)}
+  .stat-card .label{font-size:12.5px;color:var(--gray-mid);margin-top:2px}
+
+  .tabs{display:flex;gap:6px;margin-bottom:18px;border-bottom:1px solid var(--border)}
+  .tab-btn{background:none;border:none;padding:11px 18px;font-size:14px;font-weight:600;color:var(--gray-mid);cursor:pointer;border-bottom:2.5px solid transparent;position:relative;top:1px}
+  .tab-btn.active{color:var(--navy);border-bottom-color:var(--gold)}
+
+  .toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:16px;justify-content:space-between}
+  .toolbar .left{display:flex;flex-wrap:wrap;gap:10px}
+  .toolbar input[type=text], .toolbar select{padding:9px 12px;border:1px solid var(--border);border-radius:var(--r-sm);font-size:13.5px;background:var(--white)}
+  .toolbar input[type=text]{min-width:220px}
+  .btn-secondary{background:var(--gold);color:var(--navy-deep);padding:9px 16px}
+  .btn-secondary:hover{box-shadow:var(--shadow-sm);transform:translateY(-1px)}
+
+  .table-wrap{background:var(--white);border:1px solid var(--border);border-radius:var(--r-md);overflow:auto;box-shadow:var(--shadow-sm)}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:900px}
+  th{text-align:left;background:var(--gray-light);color:var(--text-mid);font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;padding:12px 14px;white-space:nowrap;position:sticky;top:0}
+  td{padding:12px 14px;border-top:1px solid var(--border);vertical-align:top}
+  tr:hover td{background:#fdfcf9}
+  .muted{color:var(--gray-mid)}
+  .msg-cell{max-width:220px;white-space:normal;color:var(--text-mid)}
+
+  select.status-select{padding:6px 8px;border-radius:6px;border:1px solid var(--border);font-size:12.5px;font-weight:600;cursor:pointer}
+  .badge-New,.badge-Confirmed{background:var(--amber-bg);color:var(--amber)}
+  .badge-Contacted{background:#e6eef7;color:var(--navy-mid)}
+  .badge-Enrolled,.badge-Completed{background:var(--green-bg);color:var(--green)}
+  .badge-Not.interested,.badge-Cancelled,.badge-No-show{background:var(--red-bg);color:var(--red)}
+
+  .icon-btn{background:none;border:none;cursor:pointer;color:var(--red);font-size:13px;font-weight:600;padding:6px 8px}
+  .icon-btn:hover{text-decoration:underline}
+
+  .empty-state{padding:50px 20px;text-align:center;color:var(--gray-mid);font-size:14px}
+  .loading-state{padding:50px 20px;text-align:center;color:var(--gray-mid);font-size:14px}
+  #toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--navy-deep);color:var(--white);padding:12px 22px;border-radius:var(--r-sm);font-size:13.5px;box-shadow:var(--shadow-md);opacity:0;pointer-events:none;transition:opacity .25s var(--ease), transform .25s var(--ease)}
+  #toast.show{opacity:1;transform:translateX(-50%) translateY(-4px)}
+
+  @media(max-width:640px){
+    header.topbar{padding:12px 16px}
+    main{padding:20px 12px 50px}
+    .toolbar{flex-direction:column;align-items:stretch}
+    .toolbar .left{flex-direction:column}
+  }
+</style>
+</head>
+<body>
+
+<!-- ===================== LOGIN SCREEN ===================== -->
+<div id="login-screen">
+  <form class="login-card" id="login-form" autocomplete="off">
+    <h1>Admin Login</h1>
+    <p>Sarvpratham Education Consultants</p>
+    <div class="field">
+      <label for="username">Username</label>
+      <input type="text" id="username" name="username" required autocomplete="username">
+    </div>
+    <div class="field">
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" required autocomplete="current-password">
+    </div>
+    <button type="submit" class="btn btn-primary" id="login-btn">Log in</button>
+    <div id="login-error"></div>
+  </form>
+</div>
+
+<!-- ===================== ADMIN APP ===================== -->
+<div id="app">
+  <header class="topbar">
+    <div class="brand">Sarvpratham <span>Admin</span></div>
+    <div class="actions">
+      <button id="export-csv-btn">Export CSV</button>
+      <button id="logout-btn">Log out</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="stats-grid" id="stats-grid">
+      <div class="stat-card"><div class="num">—</div><div class="label">Total enquiries</div></div>
+      <div class="stat-card"><div class="num">—</div><div class="label">New enquiries</div></div>
+      <div class="stat-card"><div class="num">—</div><div class="label">Enrolled</div></div>
+      <div class="stat-card"><div class="num">—</div><div class="label">Total bookings</div></div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="enquiries">Enquiries</button>
+      <button class="tab-btn" data-tab="bookings">Bookings</button>
+    </div>
+
+    <!-- ENQUIRIES TAB -->
+    <section id="tab-enquiries">
+      <div class="toolbar">
+        <div class="left">
+          <input type="text" id="enq-search" placeholder="Search name, phone, course, city…">
+          <select id="enq-status-filter">
+            <option value="">All statuses</option>
+            <option value="New">New</option>
+            <option value="Contacted">Contacted</option>
+            <option value="Enrolled">Enrolled</option>
+            <option value="Not interested">Not interested</option>
+          </select>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th><th>Name</th><th>Phone</th><th>Email</th><th>Class</th>
+              <th>Stream</th><th>Course</th><th>City</th><th>Message</th><th>Status</th><th></th>
+            </tr>
+          </thead>
+          <tbody id="enq-tbody">
+            <tr><td colspan="11" class="loading-state">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- BOOKINGS TAB -->
+    <section id="tab-bookings" style="display:none">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th><th>Name</th><th>Phone</th><th>Slot Date</th><th>Slot Time</th>
+              <th>Type</th><th>Stream</th><th>Course</th><th>Status</th><th></th>
+            </tr>
+          </thead>
+          <tbody id="book-tbody">
+            <tr><td colspan="10" class="loading-state">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div id="toast"></div>
+
+<!-- Reuses the SAME backend URL config as the main site, so it stays in sync automatically -->
+<script src="config.js"></script>
+<script>
+(function(){
+  const API_BASE = window.SP_API_BASE || 'https://sarvpratham-backend.onrender.com';
+  const TOKEN_KEY = 'sp_admin_token';
+
+  const $ = (sel) => document.querySelector(sel);
+  const loginScreen = $('#login-screen');
+  const app = $('#app');
+  const toast = $('#toast');
+
+  function showToast(msg, isError){
+    toast.textContent = msg;
+    toast.style.background = isError ? 'var(--red)' : 'var(--navy-deep)';
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2600);
+  }
+
+  function getToken(){ return localStorage.getItem(TOKEN_KEY); }
+  function setToken(t){ localStorage.setItem(TOKEN_KEY, t); }
+  function clearToken(){ localStorage.removeItem(TOKEN_KEY); }
+
+  async function api(path, opts = {}){
+    const token = getToken();
+    const headers = Object.assign({}, opts.headers || {});
+    if (token) headers['Authorization'] = 'Bearer ' + token;
+    if (opts.body) headers['Content-Type'] = 'application/json';
+
+    const res = await fetch(API_BASE + path, Object.assign({}, opts, { headers }));
+
+    if (res.status === 401) {
+      clearToken();
+      showLogin('Session expired — please log in again.');
+      throw new Error('unauthorized');
+    }
+    if (!res.ok) {
+      let detail = 'Request failed';
+      try { detail = (await res.json()).detail || detail; } catch (e) {}
+      throw new Error(detail);
+    }
+    if (res.status === 204) return null;
+    return res.json();
+  }
+
+  function showLogin(errorMsg){
+    app.style.display = 'none';
+    loginScreen.style.display = 'flex';
+    if (errorMsg) {
+      const el = $('#login-error');
+      el.textContent = errorMsg;
+      el.style.display = 'block';
+    }
+  }
+
+  function showApp(){
+    loginScreen.style.display = 'none';
+    app.style.display = 'block';
+    loadEverything();
+  }
+
+  // ---------- LOGIN ----------
+  $('#login-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = $('#login-btn');
+    const errEl = $('#login-error');
+    errEl.style.display = 'none';
+    btn.disabled = true;
+    btn.textContent = 'Logging in…';
+    try {
+      const res = await fetch(API_BASE + '/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: $('#username').value.trim(),
+          password: $('#password').value,
+        }),
+      });
+      if (!res.ok) {
+        const d = await res.json().catch(() => ({}));
+        throw new Error(d.detail || 'Incorrect username or password');
+      }
+      const data = await res.json();
+      setToken(data.access_token);
+      showApp();
+    } catch (err) {
+      errEl.textContent = err.message || 'Login failed. Please try again.';
+      errEl.style.display = 'block';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Log in';
+    }
+  });
+
+  $('#logout-btn').addEventListener('click', () => {
+    clearToken();
+    showLogin();
+  });
+
+  // ---------- CSV EXPORT ----------
+  $('#export-csv-btn').addEventListener('click', () => {
+    const token = getToken();
+    if (!token) return;
+    window.open(API_BASE + '/api/enquiries/export/csv?token=' + encodeURIComponent(token), '_blank');
+  });
+
+  // ---------- TABS ----------
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const tab = btn.dataset.tab;
+      $('#tab-enquiries').style.display = tab === 'enquiries' ? 'block' : 'none';
+      $('#tab-bookings').style.display = tab === 'bookings' ? 'block' : 'none';
+    });
+  });
+
+  // ---------- STATS ----------
+  async function loadStats(){
+    try {
+      const s = await api('/api/admin/stats');
+      const cards = document.querySelectorAll('#stats-grid .stat-card .num');
+      cards[0].textContent = s.total_enquiries;
+      cards[1].textContent = s.new_enquiries;
+      cards[2].textContent = s.enrolled_enquiries;
+      cards[3].textContent = s.total_bookings;
+    } catch (e) { /* handled by api() */ }
+  }
+
+  // ---------- ENQUIRIES ----------
+  function fmtDate(iso){
+    if (!iso) return '—';
+    const d = new Date(iso);
+    return d.toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' }) +
+      ', ' + d.toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit' });
+  }
+
+  const ENQ_STATUSES = ['New', 'Contacted', 'Enrolled', 'Not interested'];
+  const BOOK_STATUSES = ['Confirmed', 'Completed', 'Cancelled', 'No-show'];
+
+  function statusSelectHTML(current, options){
+    return options.map(o => `<option value="${o}" ${o === current ? 'selected' : ''}>${o}</option>`).join('');
+  }
+
+  let searchDebounce;
+  $('#enq-search').addEventListener('input', () => {
+    clearTimeout(searchDebounce);
+    searchDebounce = setTimeout(loadEnquiries, 350);
+  });
+  $('#enq-status-filter').addEventListener('change', loadEnquiries);
+
+  async function loadEnquiries(){
+    const tbody = $('#enq-tbody');
+    const search = $('#enq-search').value.trim();
+    const status = $('#enq-status-filter').value;
+    const params = new URLSearchParams();
+    if (search) params.set('search', search);
+    if (status) params.set('status', status);
+
+    try {
+      const rows = await api('/api/enquiries?' + params.toString());
+      if (!rows.length) {
+        tbody.innerHTML = '<tr><td colspan="11" class="empty-state">No enquiries found.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = rows.map(r => `
+        <tr data-id="${r.id}">
+          <td class="muted">${fmtDate(r.created_at)}</td>
+          <td>${escapeHtml(r.name)}</td>
+          <td>${escapeHtml(r.phone)}</td>
+          <td class="muted">${escapeHtml(r.email || '—')}</td>
+          <td class="muted">${escapeHtml(r.student_class || '—')}</td>
+          <td class="muted">${escapeHtml(r.stream || '—')}</td>
+          <td class="muted">${escapeHtml(r.course || '—')}</td>
+          <td class="muted">${escapeHtml(r.city || '—')}</td>
+          <td class="msg-cell">${escapeHtml(r.message || '—')}</td>
+          <td>
+            <select class="status-select badge-${r.status.replace(' ', '.')}" data-kind="enquiry" data-id="${r.id}">
+              ${statusSelectHTML(r.status, ENQ_STATUSES)}
+            </select>
+          </td>
+          <td><button class="icon-btn" data-kind="enquiry" data-id="${r.id}" data-action="delete">Delete</button></td>
+        </tr>
+      `).join('');
+    } catch (e) {
+      tbody.innerHTML = `<tr><td colspan="11" class="empty-state">${escapeHtml(e.message)}</td></tr>`;
+    }
+  }
+
+  // ---------- BOOKINGS ----------
+  async function loadBookings(){
+    const tbody = $('#book-tbody');
+    try {
+      const rows = await api('/api/bookings');
+      if (!rows.length) {
+        tbody.innerHTML = '<tr><td colspan="10" class="empty-state">No bookings found.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = rows.map(r => `
+        <tr data-id="${r.id}">
+          <td class="muted">${fmtDate(r.created_at)}</td>
+          <td>${escapeHtml(r.name)}</td>
+          <td>${escapeHtml(r.phone)}</td>
+          <td class="muted">${r.slot_date}</td>
+          <td class="muted">${escapeHtml(r.slot_time)}</td>
+          <td class="muted">${escapeHtml(r.session_type)}</td>
+          <td class="muted">${escapeHtml(r.stream || '—')}</td>
+          <td class="muted">${escapeHtml(r.course || '—')}</td>
+          <td>
+            <select class="status-select badge-${r.status.replace(' ', '.')}" data-kind="booking" data-id="${r.id}">
+              ${statusSelectHTML(r.status, BOOK_STATUSES)}
+            </select>
+          </td>
+          <td><button class="icon-btn" data-kind="booking" data-id="${r.id}" data-action="delete">Delete</button></td>
+        </tr>
+      `).join('');
+    } catch (e) {
+      tbody.innerHTML = `<tr><td colspan="10" class="empty-state">${escapeHtml(e.message)}</td></tr>`;
+    }
+  }
+
+  // ---------- SHARED: status change + delete (event delegation) ----------
+  document.addEventListener('change', async (e) => {
+    if (!e.target.classList.contains('status-select')) return;
+    const kind = e.target.dataset.kind;
+    const id = e.target.dataset.id;
+    const newStatus = e.target.value;
+    const endpoint = kind === 'enquiry' ? `/api/enquiries/${id}/status` : `/api/bookings/${id}/status`;
+    try {
+      await api(endpoint, { method: 'PATCH', body: JSON.stringify({ status: newStatus }) });
+      e.target.className = 'status-select badge-' + newStatus.replace(' ', '.');
+      showToast('Status updated to "' + newStatus + '"');
+      loadStats();
+    } catch (err) {
+      showToast(err.message || 'Could not update status', true);
+    }
+  });
+
+  document.addEventListener('click', async (e) => {
+    const btn = e.target.closest('[data-action="delete"]');
+    if (!btn) return;
+    const kind = btn.dataset.kind;
+    const id = btn.dataset.id;
+    const label = kind === 'enquiry' ? 'this enquiry' : 'this booking';
+    if (!confirm(`Delete ${label}? This cannot be undone.`)) return;
+    const endpoint = kind === 'enquiry' ? `/api/enquiries/${id}` : `/api/bookings/${id}`;
+    try {
+      await api(endpoint, { method: 'DELETE' });
+      btn.closest('tr').remove();
+      showToast('Deleted successfully');
+      loadStats();
+    } catch (err) {
+      showToast(err.message || 'Could not delete', true);
+    }
+  });
+
+  function escapeHtml(str){
+    return String(str).replace(/[&<>"']/g, c => ({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    }[c]));
+  }
+
+  function loadEverything(){
+    loadStats();
+    loadEnquiries();
+    loadBookings();
+  }
+
+  // ---------- INIT ----------
+  if (getToken()) {
+    showApp();
+  } else {
+    showLogin();
+  }
+})();
+</script>
+</body>
+</html>
