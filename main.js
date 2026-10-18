@@ -142,7 +142,7 @@ const STREAM_SERVICES = {
   },
   'com-math': {
     tag: 'What We Offer — Commerce with Maths',
-    sub: 'Complete guidance for Commerce + Maths students — B.Com, BBA, CA, CMA, Law, Economics and MBA.',
+    sub: 'Complete guidance for Commerce + Maths students — B.Com, BBA, CA, CMA, Law, Economics and MBA, plus national and international career certificates. Hover over a certificate to see who it suits and the career it leads to.',
     cards: [
       {icon:'📊', title:'B.Com (Hons)', desc:'SRCC, Hindu College, Ramjas — the most prestigious B.Com colleges via CUET. We specialise in DU preference strategy.', items:['CUET Commerce subject strategy','SRCC / Hindu / Ramjas shortlisting','JMI & IP University guidance','CA / CS / MBA career path planning']},
       {icon:'🏢', title:'BBA / BMS', desc:'DU JAT, IPU CET, Symbiosis SET — complete BBA college shortlisting for Delhi/NCR and top private colleges.', items:['DU JAT preparation','IPU CET BBA guidance','Symbiosis Pune SET','Christ, Amity, JIMS shortlisting']},
@@ -174,7 +174,7 @@ const STREAM_SERVICES = {
   },
   humanities: {
     tag: 'What We Offer — Humanities',
-    sub: 'Complete guidance for Humanities students — Law, Journalism, Psychology, B.Ed, Hotel Management, Social Work and more.',
+    sub: 'Complete guidance for Humanities students — Law, Journalism, Psychology, B.Ed, Hotel Management, Social Work and more, plus national and international certificates, BA subject-wise prospects, careers and higher studies. Hover over any course to see who it suits and the career it leads to.',
     cards: [
       {icon:'⚖️', title:'BA LLB (Law)', desc:'Humanities is the perfect foundation for CLAT, AILET and SLAT. 20 years of NLU and Symbiosis placement expertise.', items:['CLAT, AILET, SLAT guidance','NLU Delhi, NALSAR, NLU Jodhpur','Symbiosis Law Pune','Litigation, Corporate & Judiciary paths']},
       {icon:'🎬', title:'BJMC / Journalism', desc:'IPU CET, JMI, IIMC, Symbiosis SET — humanities students excel in media and PR careers.', items:['IPU CET BJMC & IIMC prep','JMI Delhi (AJK MCRC)','LSR DU, Symbiosis Pune','Journalism, PR & Digital Media']},
@@ -217,7 +217,9 @@ function renderServices(streamId) {
   document.getElementById('services-stream-sub').textContent = data.sub;
   const grid = document.getElementById('services-grid');
   // PCM uses the detailed catalogue (pcm-cards.js + pcm-desc-*.js): every specialisation is a chip with a hover / tap card.
-  const cards = (streamId === 'pcm' && window.PCM_CARDS) ? window.PCM_CARDS : data.cards;
+  let cards = (streamId === 'pcm' && window.PCM_CARDS) ? window.PCM_CARDS : data.cards;
+  if (streamId === 'com-math' && window.COMMERCE_EXTRA_CARDS) cards = data.cards.concat(window.COMMERCE_EXTRA_CARDS);  // + certificate / career courses
+  if (streamId === 'humanities' && window.HUMANITIES_EXTRA_CARDS) cards = data.cards.concat(window.HUMANITIES_EXTRA_CARDS);  // + certificates, degrees, BA subjects, careers
   grid.innerHTML = cards.map(c => {
     if (c.groups) {
       const labels = c.labels || ['What you study', 'Careers & jobs'];
@@ -225,7 +227,7 @@ function renderServices(streamId) {
         <div class="chip-group">
           <div class="chip-group-title">${escHtml(g.h)}</div>
           <div class="chip-wrap">${g.items.map(name => {
-            const d = (window.PCM_D || {})[name];
+            const d = (c.dmap || {})[name] || (window.PCM_D || {})[name];
             return `<button type="button" class="spec-chip" data-name="${escHtml(name)}" data-l1="${escHtml(labels[0])}" data-l2="${escHtml(labels[1])}" ${d ? `data-study="${escHtml(d[0])}" data-jobs="${escHtml(d[1])}"` : ''}>${escHtml(name)}</button>`;
           }).join('')}</div>
         </div>`).join('');
@@ -234,14 +236,14 @@ function renderServices(streamId) {
       <div class="service-icon">${c.icon}</div>
       <h3>${escHtml(c.title)}</h3>
       <p>${escHtml(c.desc)}</p>
-      <div class="chip-hint">Hover (or tap) any course to see what you study and the career options.</div>
+      <div class="chip-hint">Hover (or tap) any item to see the details.</div>
       ${groupsHtml}
       ${c.note ? `<p class="card-note">${escHtml(c.note)}</p>` : ''}
       ${collegesHtml(c)}
     </div>`;
     }
     return `
-    <div class="service-card">
+    <div class="service-card${c.wide ? ' service-card-wide' : ''}">
       <div class="service-icon">${c.icon}</div>
       <h3>${c.title}</h3>
       <p>${c.desc}</p>
