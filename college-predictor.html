@@ -3,24 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DU Cutoff Predictor — CUET Score Based</title>
+<title>DU College Predictor 2025-26 | Sarvpratham Education Consultants</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --paper:#F7F1E6; --paper-alt:#EFE5D0; --card:#FCF8EF;
-    --ink:#2B2420; --ink-soft:#5B5245;
-    --maroon:#6E1E2E; --maroon-dark:#4E1521;
-    --gold:#B8862E; --gold-light:#E8C77E;
-    --sage:#3F6B4A; --rust:#A13F2B; --line:#D9CDB8;
-    --shadow: 0 20px 40px -20px rgba(43,36,32,0.35);
-    --radius: 4px;
+    --paper:#FAF8F3; --paper-alt:#F4F2ED; --card:#FFFFFF;
+    --ink:#1A1714; --ink-soft:#4A4640;
+    --maroon:#0D2240; --maroon-dark:#081525;
+    --gold:#D4A840; --gold-light:#f0c96a;
+    --sage:#3F6B4A; --rust:#A13F2B; --line:#E3DDD3;
+    --shadow: 0 20px 40px -20px rgba(13,34,64,0.18);
+    --radius: 8px;
   }
   *{box-sizing:border-box;}
   html{scroll-behavior:smooth;}
-  body{margin:0;background:var(--paper);color:var(--ink);font-family:'Inter',sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;}
-  h1,h2,h3,.display{font-family:'Fraunces',serif;font-weight:600;color:var(--ink);margin:0;letter-spacing:-0.01em;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:'DM Sans',sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased;}
+  h1,h2,h3,.display{font-family:'Playfair Display',serif;font-weight:700;color:var(--ink);margin:0;letter-spacing:0;}
   .mono{font-family:'IBM Plex Mono',monospace;}
   a{color:inherit;}
   .wrap{max-width:1180px;margin:0 auto;padding:0 24px;}
@@ -34,8 +34,8 @@
   header.site{position:sticky;top:0;z-index:40;background:rgba(247,241,230,0.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);}
   .nav{display:flex;align-items:center;justify-content:space-between;padding:15px 0;}
   .brand{display:flex;align-items:center;gap:12px;}
-  .seal{width:40px;height:40px;border-radius:50%;border:2px solid var(--maroon);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-weight:700;font-size:14px;color:var(--maroon);flex-shrink:0;}
-  .brand-name{font-family:'Fraunces',serif;font-weight:600;font-size:18px;}
+  .seal{width:40px;height:40px;border-radius:50%;border:2px solid var(--maroon);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;font-size:14px;color:var(--maroon);flex-shrink:0;}
+  .brand-name{font-family:'Playfair Display',serif;font-weight:600;font-size:18px;}
   .brand-name span{color:var(--maroon);}
   nav.links{display:flex;gap:28px;align-items:center;}
   nav.links a{font-size:14px;font-weight:500;color:var(--ink-soft);}
@@ -47,7 +47,7 @@
   .hero p.lead{font-size:16px;color:var(--ink-soft);max-width:640px;margin-bottom:0;}
 
   .stats{display:flex;justify-content:flex-start;flex-wrap:wrap;gap:40px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:28px 0;margin-top:32px;}
-  .stat .n{font-family:'Fraunces',serif;font-size:32px;color:var(--maroon);font-weight:600;}
+  .stat .n{font-family:'Playfair Display',serif;font-size:32px;color:var(--maroon);font-weight:600;}
   .stat .l{font-size:12px;color:var(--ink-soft);font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:0.06em;}
 
   .source-note{background:var(--paper-alt);border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:2px;padding:16px 20px;font-size:13.5px;color:var(--ink-soft);margin-top:32px;max-width:820px;}
@@ -99,6 +99,11 @@
   .chip.reach{background:rgba(161,63,43,0.14);color:var(--rust);}
   .empty-note{padding:30px 16px;text-align:center;color:var(--ink-soft);font-size:13.5px;}
   .disclaimer-note{font-size:11.5px;color:var(--ink-soft);margin-top:14px;font-style:italic;}
+  .cta-card{margin-top:20px;background:var(--maroon);border-radius:10px;padding:22px 26px;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;}
+  .cta-card h4{color:#fff;}
+  .cta-card p{color:rgba(255,255,255,0.7)!important;}
+  .cta-btn{background:var(--gold);color:var(--maroon);padding:12px 22px;border-radius:8px;font-weight:700;font-size:14px;text-decoration:none;white-space:nowrap;transition:background .2s;}
+  .cta-btn:hover{background:var(--gold-light);}
 
   /* database browser */
   .browser{padding-top:0;}
@@ -123,7 +128,7 @@
   .how{background:var(--paper-alt);}
   .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
   .step{background:var(--card);border:1px solid var(--line);padding:22px 20px;border-radius:2px;}
-  .step .num{font-family:'Fraunces',serif;font-size:30px;color:var(--gold);font-weight:600;margin-bottom:10px;}
+  .step .num{font-family:'Playfair Display',serif;font-size:30px;color:var(--gold);font-weight:600;margin-bottom:10px;}
   .step h3{font-size:15.5px;margin-bottom:6px;}
   .step p{font-size:13.2px;color:var(--ink-soft);margin:0;}
 
@@ -150,32 +155,33 @@
 </head>
 <body>
 
-<div class="ticker">UNIVERSITY OF DELHI · UNDERGRADUATE ADMISSIONS · CSAS SCORE-BASED COLLEGE PREDICTOR</div>
+<div class="ticker">SARVPRATHAM EDUCATION CONSULTANTS · DU CUET ADMISSIONS 2025-26 · POWERED BY THE OFFICIAL ROUND 1 CUTOFF SHEET FROM THE DU ADMISSION BRANCH</div>
 
 <header class="site">
   <div class="wrap nav">
     <div class="brand">
-      <div class="seal">DU</div>
-      <div class="brand-name">DU <span>Cutoff</span> Predictor</div>
+      <div class="seal">SP</div>
+      <div class="brand-name">Sarvpratham <span>DU College Predictor</span></div>
     </div>
     <nav class="links">
+      <a href="index.html">← Back to Sarvpratham</a>
       <a href="#predictor">Predict my colleges</a>
       <a href="#database">Full cutoff list</a>
-      <a href="#faq">FAQ</a>
+      <a href="index.html#enquiry">Talk to a counsellor</a>
     </nav>
   </div>
 </header>
 
 <section class="hero">
   <div class="wrap">
-    <div class="eyebrow">Built from official CSAS cutoff data</div>
-    <h1>Find out which DU colleges and courses are <em>within reach</em> of your CUET score — using real cutoff data, not a guess.</h1>
-    <p class="lead">Enter your name, category and CUET marks to see which colleges and programs you'd be likely to clear, and browse the full cutoff sheet across all programs and all six categories.</p>
+    <div class="eyebrow">Built from the official Round&nbsp;1 bulletin</div>
+    <h1>Find out which DU colleges and courses were <em>within reach</em> of your CSAS score — using the real 2025-26 Round 1 cutoff sheet, not a guess.</h1>
+    <p class="lead">Every number below is transcribed from the University of Delhi Admission Branch's published "First Round of Allocation and Admissions — Minimum Allocation Score" PDF (dated 19 July 2025). Enter your category and CSAS combined score to see exactly where you'd have cleared Round 1, and browse the entire sheet — all 67 colleges, all programs, all six categories.</p>
 
     <div class="stats" id="statStrip"></div>
 
     <div class="source-note">
-      <strong>What this data is, and isn't.</strong> These are minimum allocation scores — the lowest CSAS score at which a seat was actually allotted in that program, college and category. They are not CUET percentiles and not a University-issued predictor. Cutoffs commonly move down across the admission cycle as seats vacate, and a few evening colleges have since merged with parent colleges — always cross-check anything decision-critical against <a href="https://admission.uod.ac.in" target="_blank" rel="noopener" style="color:var(--maroon);text-decoration:underline;">the official CSAS-DU portal</a> before acting on it.
+      <strong>What this data is, and isn't.</strong> These are official Round&nbsp;1 minimum allocation scores — the lowest CSAS score at which a seat was actually allotted in that program, college and category. They are not CUET percentiles and not a University-issued predictor. Later rounds (special rounds, spot rounds, upgradation) commonly move cutoffs down as seats vacate, and a few evening colleges have since merged with parent colleges — always cross-check anything decision-critical against <a href="https://admission.uod.ac.in" target="_blank" rel="noopener" style="color:var(--maroon);text-decoration:underline;">the official CSAS-DU portal</a> before acting on it.
       <br><br><strong>On the marks calculator below:</strong> it adds your Language paper plus your best 3 of (General Test + up to 3 Domain papers) to get a total out of 1000. DU's actual CSAS formula normalizes each paper against other test-takers in the same shift before combining them, so your real CSAS score can differ from this raw-marks total — treat the shortlist as a reasonable estimate, not your official score.
     </div>
   </div>
@@ -186,31 +192,21 @@
     <div class="section-head">
       <div class="eyebrow">Step one</div>
       <h2>Predict your shortlist</h2>
-      <p>Enter your name, pick your stream, enter the CUET marks you actually scored, and see every program where you'd be likely to clear the cutoff — best 4 of your 5 papers, exactly as DU counts them.</p>
+      <p>Pick your stream, enter the CUET marks you actually scored, and see every program where you'd have cleared Round 1 — best 4 of your 5 papers, exactly as DU counts them.</p>
     </div>
 
     <div class="predictor">
       <div class="predictor-head">
         <div>
-          <div class="tag">Category-wise · CUET score based</div>
+          <div class="tag">Round 1 · Category-wise · Verified against source PDF</div>
           <h3>Your admission odds, seat by seat</h3>
         </div>
-        <div class="stamp">Cutoff<br>Score<br>Data</div>
+        <div class="stamp">Round<br>One<br>Data</div>
       </div>
 
       <div class="subject-block" style="border-top:none;padding-top:0;margin-top:0;">
-        <div class="mini-head">Step 1 · Your name</div>
-        <div class="form-grid" style="grid-template-columns:1fr;">
-          <div class="field">
-            <label for="studentName">Your name</label>
-            <input type="text" id="studentName" placeholder="Enter your full name">
-          </div>
-        </div>
-      </div>
-
-      <div class="subject-block">
-        <div class="mini-head">Step 2 · Your stream &amp; category</div>
-        <div class="form-grid" style="grid-template-columns:repeat(4,1fr);">
+        <div class="mini-head">Step 1 · Your stream &amp; category</div>
+        <div class="form-grid" style="grid-template-columns:repeat(3,1fr);">
           <div class="field">
             <label for="streamSelect">Your stream</label>
             <select id="streamSelect">
@@ -229,20 +225,16 @@
             </select>
           </div>
           <div class="field">
-            <label for="keywordInput">Course / subject keyword</label>
-            <input type="text" id="keywordInput" placeholder="e.g. Economics, B.Com">
-          </div>
-          <div class="field">
-            <label for="collegeSelect">College</label>
-            <select id="collegeSelect">
-              <option value="">All colleges</option>
+            <label for="courseSelect">Course</label>
+            <select id="courseSelect">
+              <option value="">Select your stream first</option>
             </select>
           </div>
         </div>
       </div>
 
       <div class="subject-block">
-        <div class="mini-head">Step 3 · Your CUET marks — each paper out of 250</div>
+        <div class="mini-head">Step 2 · Your CUET marks — each paper out of 250</div>
         <p style="font-size:12.5px;color:var(--ink-soft);margin:-4px 0 12px;">Language is compulsory and always counts. Of your General Test + up to 3 domain papers, only the <strong>best 3</strong> are added — so leave a field blank if you didn't take that paper.</p>
         <div class="form-grid" style="grid-template-columns:repeat(5,1fr);">
           <div class="field">
@@ -281,7 +273,15 @@
           <span><i style="background:var(--rust)"></i>Short by more than 15 pts</span>
         </div>
         <div class="result-list" id="resultList"></div>
-        <p class="disclaimer-note">Ranked by margin above cutoff, best first, within your selected stream. Programs with no published cutoff for your category (no seat was allotted to that category) are excluded. Your total is a best-4 sum of raw marks, not DU's officially normalized CSAS score — see the note above the predictor.</p>
+        <p class="disclaimer-note">Ranked by margin above cutoff, best first, within your selected stream. Programs with no published cutoff for your category (no seat was allotted to that category in Round&nbsp;1) are excluded. Your total is a best-4 sum of raw marks, not DU's officially normalized CSAS score — see the note above the predictor.</p>
+
+        <div class="cta-card">
+          <div>
+            <h4 style="font-family:'Playfair Display',serif;font-size:18px;margin-bottom:6px;">Not sure how to read this list?</h4>
+            <p style="font-size:13.5px;color:var(--ink-soft);margin:0;">Our counsellors help you turn this shortlist into an actual CSAS preference order — free 15-minute call.</p>
+          </div>
+          <a href="index.html#enquiry" class="cta-btn">Book a Free Call</a>
+        </div>
       </div>
     </div>
   </div>
@@ -291,8 +291,8 @@
   <div class="wrap">
     <div class="section-head">
       <div class="eyebrow">Step two</div>
-      <h2>Browse the full cutoff sheet</h2>
-      <p>Search across every college and program and compare all six category cutoffs side by side — useful for checking a specific combination directly, without the score filter above. <em>(College database coming soon.)</em></p>
+      <h2>Browse the full Round 1 sheet</h2>
+      <p>Search across every college and program in the bulletin and compare all six category cutoffs side by side — useful for checking a specific combination directly, without the score filter above.</p>
     </div>
 
     <div class="browser-controls">
@@ -342,10 +342,10 @@
       <h2>Reading a CSAS cutoff sheet</h2>
     </div>
     <div class="steps">
-      <div class="step"><div class="num">01</div><h3>It's a minimum, not a target</h3><p>Each figure is the lowest score that still got a seat for that exact college, program and category — clearing it doesn't guarantee much margin, it's the floor.</p></div>
+      <div class="step"><div class="num">01</div><h3>It's a minimum, not a target</h3><p>Each figure is the lowest score that still got a seat in Round 1 for that exact college, program and category — clearing it doesn't guarantee much margin, it's the floor.</p></div>
       <div class="step"><div class="num">02</div><h3>Categories aren't ranked separately</h3><p>UR, OBC-NCL, SC, ST, EWS and PwBD each have their own cutoff because seats are reserved by category — compare your score only against your own category's column.</p></div>
-      <div class="step"><div class="num">03</div><h3>Blank cells mean no seat filled</h3><p>A missing cutoff for a category in a given program usually means no candidate from that category was allotted a seat there — not that the cutoff was zero.</p></div>
-      <div class="step"><div class="num">04</div><h3>Cutoffs shift over time</h3><p>As admitted students migrate or withdraw, later phases of admission typically release seats at lower scores — a "close" result today can clear later in the cycle.</p></div>
+      <div class="step"><div class="num">03</div><h3>Blank cells mean no seat filled</h3><p>A missing cutoff for a category in a given program usually means no candidate from that category was allotted a seat there in Round 1 — not that the cutoff was zero.</p></div>
+      <div class="step"><div class="num">04</div><h3>Later rounds shift down</h3><p>As admitted students migrate or withdraw, special/spot rounds typically release seats at lower scores — a "close" result today can clear in a later round.</p></div>
     </div>
   </div>
 </section>
@@ -359,15 +359,15 @@
     <div class="faq-list">
       <div class="faq-item">
         <button class="faq-q"><span>Where does this data actually come from?</span><span class="plus">+</span></button>
-        <div class="faq-a"><p>It's transcribed directly from the University of Delhi Admission Branch's official minimum allocation score bulletin. Every row here matches that document exactly — nothing is simulated or estimated.</p></div>
+        <div class="faq-a"><p>It's transcribed directly from the University of Delhi Admission Branch's official PDF, "First Round of Allocation and Admissions — Minimum Allocation Score," for Undergraduate Admissions 2025-26, dated 19 July 2025. Every row here matches that document exactly — nothing is simulated or estimated.</p></div>
       </div>
       <div class="faq-item">
         <button class="faq-q"><span>Does clearing the cutoff mean I definitely get the seat?</span><span class="plus">+</span></button>
-        <div class="faq-a"><p>No. This shows what happened during a past admission cycle only. Your own allocation still depends on your live CSAS preferences, seat availability at the time, and whether you accept and complete admission formalities within the window DU sets. Treat this as a reference point, not a guarantee.</p></div>
+        <div class="faq-a"><p>No. This shows what happened in Round 1 of this admission cycle only. Your own allocation still depends on your live CSAS preferences, seat availability at the time, and whether you accept and complete admission formalities within the window DU sets. Treat this as a reference point, not a guarantee.</p></div>
       </div>
       <div class="faq-item">
         <button class="faq-q"><span>Why are some cells blank?</span><span class="plus">+</span></button>
-        <div class="faq-a"><p>A blank cutoff for a category usually means no seat in that category was allotted in that program — the disclaimer on the original bulletin notes allocations depend on eligibility, merit, category, seat availability and tie-breaking rules, so an empty cell isn't necessarily an error.</p></div>
+        <div class="faq-a"><p>A blank cutoff for a category usually means no seat in that category was allotted in that program during Round 1 — the disclaimer on the original bulletin notes allocations depend on eligibility, merit, category, seat availability and tie-breaking rules, so an empty cell isn't necessarily an error.</p></div>
       </div>
       <div class="faq-item">
         <button class="faq-q"><span>What if I spot a discrepancy?</span><span class="plus">+</span></button>
@@ -379,8 +379,8 @@
 
 <footer>
   <div class="wrap">
-    <div>DU Cutoff Predictor — built from the DU Admission Branch's cutoff bulletin. Not an official University of Delhi product.</div>
-    <div>Verify before you act</div>
+    <div>Sarvpratham Education Consultants — DU College Predictor, built from the DU Admission Branch's Round 1, 2025-26 bulletin. Not an official University of Delhi product. <a href="index.html" style="color:var(--gold);">Back to sarvprathameduconsultants.com</a></div>
+    <div>Data as published 19 July 2025 · Verify before you act</div>
   </div>
 </footer>
 
@@ -392,8 +392,7 @@ const DATA = {"colleges":["Acharya Narendra Dev College","Aditi Mahavidyalaya (W
   const CAT_IDX = {UR:3, OBC:4, SC:5, ST:6, EWS:7, PwBD:8};
   const rows = DATA.rows; // [college, program, stream, UR,OBC,SC,ST,EWS,PwBD]
   const colleges = DATA.colleges;
-  const predictorStreams = ["Science (PCM)", "Science (PCB)", "Commerce with Maths", "Commerce without Maths", "Humanities"];
-  const dataStreams = Array.from(new Set(rows.map(r=>r[2]))).sort(); // actual streams present in the college database, used for the browse-table filter
+  const streams = Array.from(new Set(rows.map(r=>r[2]))).sort();
 
   // ---------- stat strip ----------
   const statStrip = document.getElementById('statStrip');
@@ -401,30 +400,46 @@ const DATA = {"colleges":["Acharya Narendra Dev College","Aditi Mahavidyalaya (W
   const statData = [
     [colleges.length, 'Colleges & centres'],
     [totalListings, 'Program-college listings'],
-    [5, 'Streams supported'],
-    [6, 'Reserved categories']
+    [6, 'Reserved categories'],
+    ['Round 1', '2025-26 admissions']
   ];
   statStrip.innerHTML = statData.map(s=>`<div class="stat"><div class="n">${s[0]}</div><div class="l">${s[1]}</div></div>`).join('');
 
-  // ---------- college select ----------
-  const collegeSelect = document.getElementById('collegeSelect');
-  colleges.forEach(c=>{
-    const opt = document.createElement('option');
-    opt.value = c; opt.textContent = c;
-    collegeSelect.appendChild(opt);
-  });
-
-  // ---------- stream select (predictor — fixed 5 streams) ----------
+  // ---------- stream select drives course dropdown ----------
   const streamSelect = document.getElementById('streamSelect');
-  predictorStreams.forEach(s=>{
+  const courseSelect = document.getElementById('courseSelect');
+  streams.forEach(s=>{
     const opt = document.createElement('option');
     opt.value = s; opt.textContent = s;
     streamSelect.appendChild(opt);
   });
 
-  // ---------- stream filter (database browser — actual streams in the data) ----------
+  function populateCourses(stream){
+    courseSelect.innerHTML = '';
+    if (!stream){
+      const opt = document.createElement('option');
+      opt.value = ''; opt.textContent = 'Select your stream first';
+      courseSelect.appendChild(opt);
+      return;
+    }
+    const all = document.createElement('option');
+    all.value = ''; all.textContent = 'All courses in this stream';
+    courseSelect.appendChild(all);
+
+    const courses = Array.from(new Set(
+      rows.filter(r=>r[2]===stream).map(r=>r[1])
+    )).sort();
+    courses.forEach(c=>{
+      const opt = document.createElement('option');
+      opt.value = c; opt.textContent = c;
+      courseSelect.appendChild(opt);
+    });
+  }
+  streamSelect.addEventListener('change', ()=> populateCourses(streamSelect.value));
+  populateCourses('');
+
   const dbStream = document.getElementById('dbStream');
-  dataStreams.forEach(s=>{
+  streams.forEach(s=>{
     const opt = document.createElement('option');
     opt.value = s; opt.textContent = s;
     dbStream.appendChild(opt);
@@ -491,18 +506,13 @@ const DATA = {"colleges":["Acharya Narendra Dev College","Aditi Mahavidyalaya (W
     }
     const score = totalInfo.total;
     const category = document.getElementById('categorySelect').value;
-    const keyword = document.getElementById('keywordInput').value.trim().toLowerCase();
-    const college = collegeSelect.value;
+    const course = courseSelect.value;
 
     const idx = CAT_IDX[category];
     let matches = rows.filter(r=>{
       if (r[idx] === null) return false;
       if (r[2] !== stream) return false;
-      if (college && r[0] !== college) return false;
-      if (keyword){
-        const hay = (r[0] + ' ' + r[1]).toLowerCase();
-        if (!hay.includes(keyword)) return false;
-      }
+      if (course && r[1] !== course) return false;
       return true;
     }).map(r=>{
       const cutoff = r[idx];
@@ -514,10 +524,10 @@ const DATA = {"colleges":["Acharya Narendra Dev College","Aditi Mahavidyalaya (W
 
     resultsTitle.textContent = 'Your shortlist';
     resultsSub.innerHTML = `${stream} · ${category} category · Best-4 total ${score.toFixed(1)}/1000 (${totalInfo.papersCounted} papers counted) · ${matches.length} matching listing${matches.length===1?'':'s'}` +
-      (keyword ? ` · keyword "${keyword}"` : '') + (college ? ` · ${college}` : '');
+      (course ? ` · ${course}` : '');
 
     if (matches.length === 0){
-      resultList.innerHTML = `<div class="empty-note">No listings match those filters for this category. Try clearing the keyword/college filter, or double-check the category.</div>`;
+      resultList.innerHTML = `<div class="empty-note">No listings match those filters for this category. Try clearing the course filter, or double-check the category.</div>`;
     } else {
       const header = `<div class="result-row header"><span>College</span><span>Program</span><span class="num">Cutoff</span><span class="num">Margin</span><span>Status</span></div>`;
       const body = matches.map(m=>{
@@ -543,9 +553,8 @@ const DATA = {"colleges":["Acharya Narendra Dev College","Aditi Mahavidyalaya (W
   document.getElementById('predictBtn').addEventListener('click', runPredict);
   document.getElementById('resetBtn').addEventListener('click', ()=>{
     streamSelect.value = '';
+    populateCourses('');
     document.getElementById('categorySelect').value = 'UR';
-    document.getElementById('keywordInput').value = '';
-    collegeSelect.value = '';
     [langInput, genInput, dom1Input, dom2Input, dom3Input].forEach(el=>el.value='');
     updateLiveTotal();
     document.getElementById('results').classList.remove('show');
@@ -553,7 +562,6 @@ const DATA = {"colleges":["Acharya Narendra Dev College","Aditi Mahavidyalaya (W
   [langInput, genInput, dom1Input, dom2Input, dom3Input].forEach(el=>{
     el.addEventListener('keydown', e=>{ if(e.key==='Enter') runPredict(); });
   });
-  document.getElementById('keywordInput').addEventListener('keydown', e=>{ if(e.key==='Enter') runPredict(); });
 
   // ---------- database browser ----------
   let dbRows = rows.map(r=>({college:r[0], program:r[1], stream:r[2], UR:r[3], OBC:r[4], SC:r[5], ST:r[6], EWS:r[7], PwBD:r[8]}));
@@ -595,7 +603,7 @@ const DATA = {"colleges":["Acharya Narendra Dev College","Aditi Mahavidyalaya (W
 
   function renderDbTable(){
     const slice = dbFiltered.slice(0, dbVisible);
-    dbCount.textContent = `Showing ${slice.length} of ${dbFiltered.length} matching listings (${dbRows.length} total in the full cutoff sheet)`;
+    dbCount.textContent = `Showing ${slice.length} of ${dbFiltered.length} matching listings (${dbRows.length} total in the full Round 1 sheet)`;
     dbBody.innerHTML = slice.map(r=>{
       return `<tr>
         <td>${escapeHtml(r.college)}</td>
