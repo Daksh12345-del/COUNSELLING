@@ -194,6 +194,23 @@ function escHtml(t) {
   return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
+function collegesHtml(card) {
+  const col = (window.PCM_COLLEGES || {})[card.title];
+  if (!col) return '';
+  const groups = (col.groups || []).map(g => `
+      <div class="chip-group">
+        <div class="chip-group-title">${escHtml(g.h)}</div>
+        <div class="chip-wrap">${g.items.map(n => `<span class="college-chip">${escHtml(n)}</span>`).join('')}</div>
+      </div>`).join('');
+  return `
+    <div class="colleges-block">
+      <div class="colleges-title">🎓 Premium colleges & universities to explore</div>
+      ${groups}
+      ${col.note ? `<p class="card-note">${escHtml(col.note)}</p>` : ''}
+      <p class="colleges-disclaimer">Curated shortlist, not an official ranking. Confirm the exact course, eligibility, entrance exam, fees and approval on each college's official admissions page.</p>
+    </div>`;
+}
+
 function renderServices(streamId) {
   const data = STREAM_SERVICES[streamId] || STREAM_SERVICES['pcm'];
   document.getElementById('services-stream-tag').textContent = data.tag;
@@ -220,6 +237,7 @@ function renderServices(streamId) {
       <div class="chip-hint">Hover (or tap) any course to see what you study and the career options.</div>
       ${groupsHtml}
       ${c.note ? `<p class="card-note">${escHtml(c.note)}</p>` : ''}
+      ${collegesHtml(c)}
     </div>`;
     }
     return `
